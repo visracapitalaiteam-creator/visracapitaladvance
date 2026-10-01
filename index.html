@@ -36,6 +36,7 @@
         <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
+        <span class="nav__glider" aria-hidden="true"></span>
         <ul class="nav__menu" id="nav-menu">
           <li><a href="#approach">Approach</a></li>
           <li><a href="#services">Services</a></li>
@@ -46,12 +47,14 @@
         </ul>
       </nav>
     </div>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
   </header>
 
   <main id="main">
     <!-- ============ HERO ============ -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero__glow" aria-hidden="true"></div>
+      <canvas class="hero__net" aria-hidden="true"></canvas>
       <div class="wrap hero__grid">
         <div class="hero__copy">
           <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>AI-Driven Solutions</p>
@@ -75,16 +78,28 @@
 
         <!-- Signature medallion: monogram framed by an AI "scanning" orbit -->
         <div class="hero__visual" aria-hidden="true">
+          <!-- Layers sit at different depths; JS tilts the whole piece and shifts each layer. -->
           <div class="medallion">
-            <div class="medallion__glow"></div>
-            <svg class="medallion__rings" viewBox="0 0 400 400" fill="none">
+            <div class="medallion__glow" data-depth="-0.6"></div>
+            <svg class="medallion__rings" data-depth="-1" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--outer" cx="200" cy="200" r="188" fill="none" />
               <circle class="ring ring--scan"  cx="200" cy="200" r="188" fill="none" />
+            </svg>
+            <svg class="medallion__rings" data-depth="-0.45" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--mid"   cx="200" cy="200" r="150" fill="none" />
               <circle class="ring ring--scan2" cx="200" cy="200" r="150" fill="none" />
+            </svg>
+            <svg class="medallion__rings" data-depth="0.1" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--inner" cx="200" cy="200" r="118" fill="none" />
             </svg>
-            <img class="medallion__logo" src="assets/visra-monogram.png" alt="" width="150" height="150" />
+            <div class="medallion__mark" data-depth="0.9">
+              <!-- Solid 3D emblem: front + back faces, JS stacks edge layers between them -->
+              <div class="coin">
+                <img class="medallion__logo coin__front" src="assets/visra-monogram.png" alt="" width="150" height="150" />
+                <img class="coin__back" src="assets/visra-monogram.png" alt="" width="150" height="150" />
+                <span class="medallion__shine"></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -111,11 +126,17 @@
       <div class="wrap">
         <header class="section-head">
           <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Our philosophy</p>
-          <h2 class="section-title" id="approach-title">The discipline of a machine. <br class="hide-mobile" />The judgment of experience.</h2>
+          <!-- each line rises into view in turn -->
+          <h2 class="section-title" id="approach-title">
+            <span class="line"><span>The discipline of a machine.</span></span>
+            <span class="line"><span>The judgment of <em>experience</em>.</span></span>
+          </h2>
           <p class="section-intro">
-            We built Visra on a simple conviction: the best investment decisions come from pairing relentless, unbiased analysis with the wisdom of people who have done this before. Technology finds the signal — our partners decide what to do with it.
+            We built Visra on a simple conviction: the best investment decisions come from pairing relentless, unbiased analysis with the wisdom of people who have done this before. <span class="intro-key">Technology finds the signal — our partners decide what to do with it.</span>
           </p>
         </header>
+
+        <div class="ornament" aria-hidden="true"><span></span><i></i><span></span></div>
 
         <div class="tenets">
           <article class="tenet">
@@ -134,6 +155,40 @@
             <p class="tenet__desc">A modern, remote-first firm headquartered in the Emirates and operating to institutional standards — serving discerning clients wherever they are in the world.</p>
           </article>
         </div>
+
+        <!-- Global reach: dotted world map, arcs drawn out from Dubai -->
+        <figure class="reach">
+          <div class="reach__map">
+            <svg viewBox="0 0 160 60" aria-hidden="true">
+              <path class="reach__land" d="M30.5 0.5h0.5M35.5 0.5h1.5M42.5 0.5h3.5M47.5 0.5h23.5M86.5 0.5h1.5M89.5 0.5h1.5M124.5 0.5h0.5M28.5 1.5h4.5M34.5 1.5h2.5M39.5 1.5h0.5M42.5 1.5h1.5M54.5 1.5h16.5M106.5 1.5h2.5M120.5 1.5h10.5M141.5 1.5h2.5M25.5 2.5h3.5M32.5 2.5h1.5M35.5 2.5h10.5M55.5 2.5h15.5M104.5 2.5h0.5M116.5 2.5h16.5M135.5 2.5h1.5M142.5 2.5h1.5M0.5 3.5h0.5M10.5 3.5h0.5M25.5 3.5h0.5M28.5 3.5h5.5M37.5 3.5h1.5M40.5 3.5h7.5M56.5 3.5h13.5M92.5 3.5h0.5M104.5 3.5h0.5M110.5 3.5h1.5M113.5 3.5h34.5M159.5 3.5h0.5M6.5 4.5h21.5M29.5 4.5h2.5M33.5 4.5h1.5M38.5 4.5h2.5M42.5 4.5h1.5M46.5 4.5h3.5M57.5 4.5h10.5M88.5 4.5h7.5M107.5 4.5h1.5M110.5 4.5h1.5M113.5 4.5h41.5M156.5 4.5h3.5M0.5 5.5h3.5M8.5 5.5h34.5M47.5 5.5h4.5M56.5 5.5h8.5M86.5 5.5h11.5M100.5 5.5h11.5M113.5 5.5h46.5M2.5 6.5h0.5M7.5 6.5h33.5M42.5 6.5h1.5M45.5 6.5h5.5M57.5 6.5h4.5M70.5 6.5h2.5M85.5 6.5h73.5M6.5 7.5h32.5M44.5 7.5h3.5M50.5 7.5h0.5M58.5 7.5h2.5M82.5 7.5h5.5M89.5 7.5h62.5M153.5 7.5h4.5M7.5 8.5h6.5M17.5 8.5h20.5M46.5 8.5h2.5M82.5 8.5h5.5M90.5 8.5h0.5M93.5 8.5h55.5M152.5 8.5h1.5M10.5 9.5h1.5M21.5 9.5h17.5M46.5 9.5h5.5M77.5 9.5h1.5M85.5 9.5h1.5M91.5 9.5h50.5M150.5 9.5h1.5M8.5 10.5h0.5M21.5 10.5h20.5M45.5 10.5h7.5M77.5 10.5h1.5M85.5 10.5h0.5M89.5 10.5h51.5M149.5 10.5h2.5M23.5 11.5h20.5M45.5 11.5h9.5M76.5 11.5h0.5M78.5 11.5h1.5M82.5 11.5h61.5M149.5 11.5h1.5M23.5 12.5h30.5M78.5 12.5h1.5M81.5 12.5h60.5M143.5 12.5h0.5M24.5 13.5h24.5M50.5 13.5h0.5M54.5 13.5h1.5M78.5 13.5h63.5M143.5 13.5h0.5M25.5 14.5h26.5M79.5 14.5h16.5M97.5 14.5h43.5M25.5 15.5h24.5M79.5 15.5h6.5M87.5 15.5h5.5M97.5 15.5h42.5M143.5 15.5h1.5M25.5 16.5h23.5M76.5 16.5h4.5M85.5 16.5h1.5M88.5 16.5h3.5M95.5 16.5h0.5M98.5 16.5h39.5M142.5 16.5h0.5M25.5 17.5h21.5M76.5 17.5h3.5M89.5 17.5h0.5M92.5 17.5h40.5M134.5 17.5h2.5M142.5 17.5h0.5M26.5 18.5h19.5M76.5 18.5h2.5M86.5 18.5h0.5M92.5 18.5h41.5M136.5 18.5h0.5M141.5 18.5h1.5M26.5 19.5h19.5M77.5 19.5h7.5M90.5 19.5h0.5M96.5 19.5h36.5M136.5 19.5h0.5M139.5 19.5h2.5M28.5 20.5h16.5M76.5 20.5h8.5M95.5 20.5h38.5M138.5 20.5h0.5M28.5 21.5h0.5M30.5 21.5h13.5M76.5 21.5h11.5M89.5 21.5h44.5M29.5 22.5h7.5M43.5 22.5h0.5M75.5 22.5h26.5M103.5 22.5h30.5M31.5 23.5h5.5M74.5 23.5h20.5M96.5 23.5h5.5M105.5 23.5h27.5M32.5 24.5h4.5M45.5 24.5h0.5M73.5 24.5h22.5M97.5 24.5h7.5M110.5 24.5h21.5M133.5 24.5h0.5M33.5 25.5h3.5M44.5 25.5h1.5M72.5 25.5h23.5M97.5 25.5h8.5M111.5 25.5h8.5M121.5 25.5h8.5M33.5 26.5h3.5M40.5 26.5h0.5M48.5 26.5h0.5M73.5 26.5h23.5M98.5 26.5h7.5M112.5 26.5h5.5M122.5 26.5h4.5M128.5 26.5h0.5M35.5 27.5h5.5M73.5 27.5h23.5M99.5 27.5h5.5M113.5 27.5h3.5M122.5 27.5h5.5M133.5 27.5h0.5M39.5 28.5h3.5M72.5 28.5h25.5M99.5 28.5h2.5M113.5 28.5h2.5M123.5 28.5h4.5M133.5 28.5h0.5M41.5 29.5h1.5M73.5 29.5h26.5M113.5 29.5h2.5M125.5 29.5h3.5M42.5 30.5h0.5M46.5 30.5h5.5M73.5 30.5h29.5M114.5 30.5h0.5M126.5 30.5h1.5M135.5 30.5h0.5M43.5 31.5h0.5M45.5 31.5h8.5M74.5 31.5h27.5M114.5 31.5h1.5M124.5 31.5h0.5M134.5 31.5h1.5M46.5 32.5h9.5M75.5 32.5h5.5M82.5 32.5h19.5M125.5 32.5h0.5M131.5 32.5h0.5M135.5 32.5h0.5M46.5 33.5h10.5M84.5 33.5h16.5M123.5 33.5h0.5M125.5 33.5h0.5M130.5 33.5h1.5M45.5 34.5h12.5M84.5 34.5h15.5M124.5 34.5h1.5M128.5 34.5h4.5M135.5 34.5h0.5M44.5 35.5h13.5M84.5 35.5h14.5M124.5 35.5h1.5M129.5 35.5h2.5M134.5 35.5h0.5M138.5 35.5h1.5M44.5 36.5h17.5M84.5 36.5h13.5M125.5 36.5h1.5M129.5 36.5h2.5M137.5 36.5h0.5M139.5 36.5h3.5M147.5 36.5h0.5M44.5 37.5h19.5M85.5 37.5h11.5M126.5 37.5h0.5M133.5 37.5h1.5M141.5 37.5h3.5M147.5 37.5h0.5M45.5 38.5h19.5M86.5 38.5h10.5M128.5 38.5h1.5M141.5 38.5h4.5M150.5 38.5h0.5M45.5 39.5h18.5M86.5 39.5h11.5M133.5 39.5h0.5M145.5 39.5h1.5M46.5 40.5h16.5M86.5 40.5h11.5M139.5 40.5h1.5M143.5 40.5h0.5M46.5 41.5h16.5M85.5 41.5h12.5M101.5 41.5h0.5M136.5 41.5h3.5M143.5 41.5h0.5M47.5 42.5h15.5M85.5 42.5h12.5M100.5 42.5h1.5M135.5 42.5h5.5M143.5 42.5h1.5M154.5 42.5h0.5M159.5 42.5h0.5M49.5 43.5h12.5M85.5 43.5h10.5M100.5 43.5h1.5M134.5 43.5h10.5M49.5 44.5h12.5M86.5 44.5h9.5M100.5 44.5h1.5M131.5 44.5h14.5M153.5 44.5h0.5M49.5 45.5h10.5M86.5 45.5h9.5M99.5 45.5h1.5M131.5 45.5h15.5M49.5 46.5h9.5M87.5 46.5h7.5M131.5 46.5h16.5M48.5 47.5h9.5M87.5 47.5h7.5M131.5 47.5h16.5M48.5 48.5h9.5M88.5 48.5h5.5M131.5 48.5h16.5M48.5 49.5h8.5M88.5 49.5h4.5M131.5 49.5h5.5M139.5 49.5h8.5M48.5 50.5h5.5M55.5 50.5h0.5M88.5 50.5h0.5M131.5 50.5h1.5M140.5 50.5h6.5M47.5 51.5h7.5M142.5 51.5h4.5M157.5 51.5h0.5M47.5 52.5h4.5M157.5 52.5h1.5M47.5 53.5h3.5M144.5 53.5h1.5M156.5 53.5h0.5M47.5 54.5h3.5M155.5 54.5h1.5M47.5 55.5h2.5M154.5 55.5h1.5M46.5 56.5h4.5M46.5 57.5h2.5M47.5 58.5h1.5M48.5 59.5h2.5" />
+              <g class="reach__arcs">
+                <path style="--i:0" pathLength="1" d="M104.58 23.97Q95.78 10.74 79.96 12.28" />
+                <path style="--i:1" pathLength="1" d="M104.58 23.97Q77.92 3.29 47.11 17.08" />
+                <path style="--i:2" pathLength="1" d="M104.58 23.97Q118.06 16.77 130.76 25.26" />
+                <path style="--i:3" pathLength="1" d="M104.58 23.97Q118.55 22.81 126.13 34.59" />
+                <path style="--i:4" pathLength="1" d="M104.58 23.97Q91.66 31.75 92.44 46.81" />
+                <path style="--i:5" pathLength="1" d="M104.58 23.97Q133.77 24.32 147.2 50.23" />
+                <path style="--i:6" pathLength="1" d="M104.58 23.97Q75.45 21.2 59.29 45.61" />
+              </g>
+              <g class="reach__ends">
+                <circle style="--i:0" cx="79.96" cy="12.28" r="0.6" />
+                <circle style="--i:1" cx="47.11" cy="17.08" r="0.6" />
+                <circle style="--i:2" cx="130.76" cy="25.26" r="0.6" />
+                <circle style="--i:3" cx="126.13" cy="34.59" r="0.6" />
+                <circle style="--i:4" cx="92.44" cy="46.81" r="0.6" />
+                <circle style="--i:5" cx="147.2" cy="50.23" r="0.6" />
+                <circle style="--i:6" cx="59.29" cy="45.61" r="0.6" />
+              </g>
+              <circle class="reach__pulse" cx="104.58" cy="23.97" r="1.1" />
+              <circle class="reach__hub" cx="104.58" cy="23.97" r="1.1" />
+            </svg>
+            <span class="reach__label" aria-hidden="true">Dubai</span>
+            <canvas class="reach__globe" aria-hidden="true"></canvas>
+          </div>
+          <figcaption class="reach__cap">
+            <span class="reach__kicker">Headquartered in Dubai</span>
+            <span class="reach__line">Serving discerning clients, wherever they are in the world.</span>          </figcaption>
+        </figure>
       </div>
     </section>
 
@@ -147,7 +202,8 @@
 
         <div class="service-grid">
           <!-- Private Equity -->
-          <article class="service">
+          <article class="service spot">
+            <span class="service__numeral" aria-hidden="true">I</span>
             <div class="service__head">
               <span class="service__glyph" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="26" height="26"><path d="M3 20h18M6 20v-6M11 20V8M16 20v-9M21 20V5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -166,7 +222,8 @@
           </article>
 
           <!-- Wealth Management -->
-          <article class="service">
+          <article class="service spot">
+            <span class="service__numeral" aria-hidden="true">II</span>
             <div class="service__head">
               <span class="service__glyph" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3v18M7 7c0-1.7 2.2-3 5-3s5 1.3 5 3-2.2 3-5 3-5 1.3-5 3 2.2 3 5 3 5-1.3 5-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -185,7 +242,8 @@
           </article>
 
           <!-- Trading & Markets -->
-          <article class="service">
+          <article class="service spot">
+            <span class="service__numeral" aria-hidden="true">III</span>
             <div class="service__head">
               <span class="service__glyph" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="26" height="26"><path d="M7 8h11l-3-3M7 8l3 3M17 16H6l3 3M17 16l-3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -204,7 +262,8 @@
           </article>
 
           <!-- Family Office -->
-          <article class="service">
+          <article class="service spot">
+            <span class="service__numeral" aria-hidden="true">IV</span>
             <div class="service__head">
               <span class="service__glyph" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="26" height="26"><path d="M4 11 12 4l8 7M6 10v9h12v-9M10 19v-5h4v5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -236,35 +295,67 @@
           </p>
         </header>
 
-        <div class="intel-grid">
-          <article class="intel-card">
-            <span class="intel-card__ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 16l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </span>
-            <h3>Signal &amp; sourcing</h3>
-            <p>Models scan thousands of companies and markets to surface the few opportunities that merit our partners' attention.</p>
-          </article>
-          <article class="intel-card">
-            <span class="intel-card__ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            <h3>Continuous risk monitoring</h3>
-            <p>Positions are watched continuously rather than reviewed quarter to quarter, so exposures are understood as conditions change.</p>
-          </article>
-          <article class="intel-card">
-            <span class="intel-card__ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 15a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15l4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>
-            </span>
-            <h3>Adaptive allocation</h3>
-            <p>Allocations are recalibrated as the landscape shifts — always proposed by the system, always ratified by people.</p>
-          </article>
-          <article class="intel-card">
-            <span class="intel-card__ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </span>
-            <h3>Human oversight</h3>
-            <p>Every meaningful decision is reviewed and approved by the investment committee. Accountability stays with the partners.</p>
-          </article>
+        <div class="pipeline">
+          <svg class="pipeline__wave" viewBox="0 0 1200 240" preserveAspectRatio="none" aria-hidden="true">
+            <g class="wave wave--1"><path /></g>
+            <g class="wave wave--2"><path /></g>
+            <g class="wave wave--3"><path /></g>
+          </svg>
+          <div class="pipeline__rail" aria-hidden="true"><span class="pipeline__fill"></span></div>
+          <ol class="pipeline__stages">
+          <li class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <article class="stage__card spot">
+              <div class="stage__top">
+                <span class="stage__ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 16l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                <span class="stage__step">Stage 01</span>
+              </div>
+              <h3>Signal &amp; sourcing</h3>
+              <p>Models scan thousands of companies and markets to surface the few opportunities that merit our partners' attention.</p>
+            </article>
+          </li>
+          <li class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <article class="stage__card spot">
+              <div class="stage__top">
+                <span class="stage__ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="stage__step">Stage 02</span>
+              </div>
+              <h3>Continuous risk monitoring</h3>
+              <p>Positions are watched continuously rather than reviewed quarter to quarter, so exposures are understood as conditions change.</p>
+            </article>
+          </li>
+          <li class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <article class="stage__card spot">
+              <div class="stage__top">
+                <span class="stage__ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 15a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15l4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>
+                </span>
+                <span class="stage__step">Stage 03</span>
+              </div>
+              <h3>Adaptive allocation</h3>
+              <p>Allocations are recalibrated as the landscape shifts — always proposed by the system, always ratified by people.</p>
+            </article>
+          </li>
+          <li class="stage">
+            <span class="stage__node" aria-hidden="true"></span>
+            <article class="stage__card spot">
+              <div class="stage__top">
+                <span class="stage__ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </span>
+                <span class="stage__step">Stage 04</span>
+              </div>
+              <h3>Human oversight</h3>
+              <p>Every meaningful decision is reviewed and approved by the investment committee. Accountability stays with the partners.</p>
+            </article>
+          </li>
+          </ol>
         </div>
       </div>
     </section>
@@ -281,7 +372,8 @@
         </header>
 
         <div class="focus-grid">
-          <article class="focus-card">
+          <article class="focus-card spot">
+            <span class="focus-card__no" aria-hidden="true">01</span>
             <span class="focus-card__ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="24" height="24"><rect x="6" y="6" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
@@ -289,7 +381,8 @@
             <p class="focus-card__desc">Foundational models, automation, and the compute infrastructure that powers them.</p>
           </article>
 
-          <article class="focus-card">
+          <article class="focus-card spot">
+            <span class="focus-card__no" aria-hidden="true">02</span>
             <span class="focus-card__ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 9l9-5 9 5M4 9v9M20 9v9M8 9v9M12 9v9M16 9v9M3 20h18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -297,7 +390,8 @@
             <p class="focus-card__desc">Platforms modernising how capital moves, lends, and settles across markets.</p>
           </article>
 
-          <article class="focus-card">
+          <article class="focus-card spot">
+            <span class="focus-card__no" aria-hidden="true">03</span>
             <span class="focus-card__ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 12h4l2 6 4-12 2 6h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
@@ -305,7 +399,8 @@
             <p class="focus-card__desc">Companies advancing diagnostics, therapeutics, and the science of longevity.</p>
           </article>
 
-          <article class="focus-card">
+          <article class="focus-card spot">
+            <span class="focus-card__no" aria-hidden="true">04</span>
             <span class="focus-card__ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 21h18M5 21V8l6-4 6 4v13M9 21v-5h6v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 11h1.5M13.5 11H15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
@@ -313,7 +408,8 @@
             <p class="focus-card__desc">Durable, income-generating assets that anchor a portfolio through cycles.</p>
           </article>
 
-          <article class="focus-card">
+          <article class="focus-card spot">
+            <span class="focus-card__no" aria-hidden="true">05</span>
             <span class="focus-card__ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="24" height="24"><path d="M6 8h12l-1 12H7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </span>
@@ -321,7 +417,8 @@
             <p class="focus-card__desc">Brands and platforms defining how the next generation discovers and spends.</p>
           </article>
 
-          <article class="focus-card">
+          <article class="focus-card spot">
+            <span class="focus-card__no" aria-hidden="true">06</span>
             <span class="focus-card__ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="24" height="24"><path d="M13 2 4 14h7l-2 8 9-12h-7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
             </span>
@@ -334,8 +431,17 @@
       </div>
     </section>
 
+    <!-- ============ MANIFESTO ============ -->
+    <section class="manifesto" aria-label="Our conviction">
+      <div class="wrap">
+        <p class="manifesto__text">We believe capital should be compounded with <em>care</em>&nbsp;— guided by <em>intelligence</em>, and always answerable to <em>people</em>.</p>
+        <p class="manifesto__sign"><span class="eyebrow__line" aria-hidden="true"></span>Visra Capital Group<span class="eyebrow__line" aria-hidden="true"></span></p>
+      </div>
+    </section>
+
     <!-- ============ CONTACT ============ -->
     <section class="contact" id="contact" aria-labelledby="contact-title">
+      <img class="contact__watermark" src="assets/visra-monogram.png" alt="" aria-hidden="true" width="150" height="150" />
       <div class="wrap contact__grid">
         <div class="contact__intro">
           <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>Request access</p>
@@ -343,6 +449,12 @@
           <p class="contact__lead">
             We work with a limited number of clients by introduction and enquiry. Tell us a little about what you're building toward, and a partner will respond personally and in confidence.
           </p>
+
+          <ul class="contact__promises">
+            <li>Reviewed personally by a partner</li>
+            <li>Held in strict confidence</li>
+            <li>By introduction or enquiry</li>
+          </ul>
 
           <ul class="contact__details">
             <li>
@@ -376,18 +488,27 @@
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 6h16v12H4z M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             </a>
           </div>
-
-          <a class="whop" href="https://whop.com/" target="_blank" rel="noopener noreferrer" aria-label="Whop Originals (opens in a new tab)">
-            <span class="whop__ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z" fill="currentColor"/></svg>
-            </span>
-            <span class="whop__label">Whop Originals</span>
-            <svg class="whop__arrow" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
         </div>
 
         <div class="contact__formwrap">
+          <div class="seal" aria-hidden="true"><img src="assets/visra-monogram.png" alt="" width="150" height="150" /></div>
+          <div class="form__head">
+            <span class="form__kicker">Private enquiry</span>
+            <span class="form__conf">
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+              Strictly confidential
+            </span>
+          </div>
           <form class="form" id="contact-form" novalidate>
+            <div class="form__success" id="form-success" role="status" hidden>
+              <span class="form__success-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div>
+                <strong>Sealed — your enquiry is on its way.</strong>
+                <span>A partner will be in touch personally, in confidence.</span>
+              </div>
+            </div>
             <div class="form__row">
               <div class="field">
                 <label for="name">Full name <span class="req" aria-hidden="true">*</span></label>
@@ -406,16 +527,16 @@
               <p class="field__err" id="email-err" role="alert"></p>
             </div>
 
-            <div class="field">
-              <label for="interest">Area of interest</label>
-              <select id="interest" name="interest">
-                <option value="">Select one…</option>
-                <option>Private Equity</option>
-                <option>Wealth Management</option>
-                <option>Both</option>
-                <option>Not sure yet</option>
-              </select>
-            </div>
+            <fieldset class="field field--chips">
+              <legend>Area of interest</legend>
+              <div class="chips">
+                <label class="chip"><input type="radio" name="interest" value="Private Equity" /><span>Private Equity</span></label>
+                <label class="chip"><input type="radio" name="interest" value="Wealth Management" /><span>Wealth Management</span></label>
+                <label class="chip"><input type="radio" name="interest" value="Trading &amp; Markets" /><span>Trading &amp; Markets</span></label>
+                <label class="chip"><input type="radio" name="interest" value="Family Office" /><span>Family Office</span></label>
+                <label class="chip"><input type="radio" name="interest" value="Not sure yet" /><span>Not sure yet</span></label>
+              </div>
+            </fieldset>
 
             <div class="field">
               <label for="message">How can we help? <span class="req" aria-hidden="true">*</span></label>
@@ -430,15 +551,6 @@
 
             <p class="form__note">Your enquiry is treated in strict confidence. We never share your details.</p>
 
-            <div class="form__success" id="form-success" role="status" hidden>
-              <span class="form__success-ico" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-              <div>
-                <strong>Thank you — your enquiry has been received.</strong>
-                <span>A partner will be in touch personally, in confidence.</span>
-              </div>
-            </div>
           </form>
         </div>
       </div>

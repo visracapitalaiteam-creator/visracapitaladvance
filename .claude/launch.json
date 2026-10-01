@@ -9,7 +9,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "C:\\Users\\Fahad Umar\\Visra web\\.claude\\serve.ps1",
+        "C:\\Visra web\\.claude\\serve.ps1",
         "-Port",
         "3000"
       ],
