@@ -24,6 +24,11 @@ my @pairs = (
    'ملكية خاصة وإدارة ثروات يقودهما الذكاء الاصطناعي للأفراد ذوي الملاءة المالية العالية. مؤسَّسة في دولة الإمارات.'],
   ['<meta property="og:locale" content="en_GB" />', '<meta property="og:locale" content="ar_AE" />'],
   ['<meta property="og:locale:alternate" content="ar_AE" />', '<meta property="og:locale:alternate" content="en_GB" />'],
+  # the Arabic page is its own address for search engines and link previews
+  ['<meta property="og:url" content="https://visracapitalaiteam-creator.github.io/visracapitaladvance/" />',
+   '<meta property="og:url" content="https://visracapitalaiteam-creator.github.io/visracapitaladvance/ar.html" />'],
+  ['<link rel="canonical" href="https://visracapitalaiteam-creator.github.io/visracapitaladvance/" />',
+   '<link rel="canonical" href="https://visracapitalaiteam-creator.github.io/visracapitaladvance/ar.html" />'],
   ['Visra Capital Group — Private capital, guided by intelligence.', 'فيسرا كابيتال غروب — رأس مال خاص، يقوده الذكاء.'],
   ['family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap',
    'family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap'],
