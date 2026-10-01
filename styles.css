@@ -197,7 +197,7 @@ button, input, textarea, select { font: inherit; }
 }
 
 .brand { display: inline-flex; align-items: center; gap: 0.8rem; color: var(--text); }
-.brand__mark { flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(201, 162, 90, 0.25)); }
+.brand__mark { flex-shrink: 0; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(201, 162, 90, 0.25)); }   /* the mark is wider than tall: fit it, never stretch it */
 .brand__text { display: flex; flex-direction: column; line-height: 1; }
 .brand__name {
   font-family: var(--font-body);
@@ -487,8 +487,8 @@ button, input, textarea, select { font: inherit; }
 .medallion__shine {
   --sx: 0;
   position: absolute; inset: 0; pointer-events: none;
-  -webkit-mask: url("assets/visra-monogram.png") center / contain no-repeat;
-          mask: url("assets/visra-monogram.png") center / contain no-repeat;
+  -webkit-mask: url("assets/visra-mark.png") center / contain no-repeat;
+          mask: url("assets/visra-mark.png") center / contain no-repeat;
   background: linear-gradient(115deg, transparent 38%, rgba(255, 246, 220, 0.8) 50%, transparent 62%);
   background-size: 300% 100%;
   background-position: calc(50% - var(--sx) * 50%) 0;
@@ -523,9 +523,10 @@ button, input, textarea, select { font: inherit; }
   animation: marquee 32s linear infinite;
 }
 .marquee__track span:not(.marquee__dot) {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.35rem;
+  /* small spaced capitals: the thin serif italic used before was hard to read */
+  font-family: var(--font-body);
+  font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -1097,6 +1098,100 @@ button, input, textarea, select { font: inherit; }
 }
 
 /* =========================================================
+   HOW WE WORK — four steps on a connecting line
+   ========================================================= */
+.process {
+  padding-block: clamp(4.5rem, 9vw, 7.5rem);
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+.steps {
+  list-style: none; padding: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1.25rem, 2.5vw, 2.25rem);
+  position: relative;
+}
+/* the line the numbers sit on */
+.steps::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 1.65rem; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-2) 12%, var(--line-2) 88%, transparent);
+}
+.step { position: relative; }
+.step__no {
+  position: relative; z-index: 1;
+  display: inline-grid; place-items: center;
+  width: 3.3rem; height: 3.3rem; border-radius: 50%;
+  margin-bottom: 1.4rem;
+  font-family: var(--font-display); font-style: italic; font-size: 1.35rem;
+  color: var(--gold-lt);
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  box-shadow: 0 0 0 6px var(--bg), 0 0 24px -6px rgba(232, 206, 143, 0.35);
+  transition: border-color 0.4s, box-shadow 0.5s var(--ease), color 0.3s;
+}
+.step__title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 1.5rem; line-height: 1.2; margin-bottom: 0.55rem;
+}
+.step__desc { color: var(--muted); font-size: 0.95rem; }
+@media (hover: hover) {
+  .step:hover .step__no {
+    border-color: var(--gold); color: #fff5dc;
+    box-shadow: 0 0 0 6px var(--bg), 0 0 30px -2px rgba(232, 206, 143, 0.6);
+  }
+}
+
+/* =========================================================
+   FAQ — native <details>, so it works without JavaScript
+   ========================================================= */
+.faq {
+  padding-block: clamp(4.5rem, 9vw, 7.5rem);
+  background:
+    radial-gradient(60% 50% at 90% 10%, rgba(201, 162, 90, 0.06), transparent 60%),
+    var(--bg-2);
+  border-top: 1px solid var(--line);
+}
+.faq__grid {
+  display: grid; grid-template-columns: 0.8fr 1.2fr;
+  gap: clamp(2rem, 5vw, 5rem); align-items: start;
+}
+.faq .section-head { margin-bottom: 0; }
+.faq__list { border-top: 1px solid var(--line); }
+.faq__item { border-bottom: 1px solid var(--line); }
+.faq__item summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+  padding: 1.25rem 0;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.2rem, 2vw, 1.42rem); line-height: 1.25;
+  transition: color 0.2s;
+}
+.faq__item summary::-webkit-details-marker { display: none; }
+/* plus that turns into a minus */
+.faq__item summary::after {
+  content: ""; flex-shrink: 0; width: 15px; height: 15px;
+  background:
+    linear-gradient(var(--gold-lt), var(--gold-lt)) center / 100% 1px no-repeat,
+    linear-gradient(var(--gold-lt), var(--gold-lt)) center / 1px 100% no-repeat;
+  transition: transform 0.4s var(--ease), background-size 0.3s;
+}
+.faq__item[open] summary { color: var(--gold-lt); }
+.faq__item[open] summary::after {
+  transform: rotate(180deg);
+  background-size: 100% 1px, 1px 0%;
+}
+.faq__item p {
+  padding: 0 2.5rem 1.4rem 0;
+  color: var(--muted); font-size: 1rem; max-width: 60ch;
+}
+.faq__item a { color: var(--gold-lt); text-decoration: underline; text-underline-offset: 2px; }
+@media (hover: hover) { .faq__item summary:hover { color: var(--gold-lt); } }
+@media (prefers-reduced-motion: no-preference) {
+  .faq__item[open] p { animation: faq-in 0.45s var(--ease); }
+}
+@keyframes faq-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* =========================================================
    MANIFESTO — words brighten one by one as you scroll
    ========================================================= */
 .manifesto {
@@ -1371,6 +1466,7 @@ button, input, textarea, select { font: inherit; }
 }
 .form__success strong { display: block; color: var(--text); font-size: 0.95rem; }
 .form__success span { font-size: 0.85rem; color: var(--muted); }
+.form__success a { color: var(--gold-lt); text-decoration: underline; text-underline-offset: 2px; }
 
 /* =========================================================
    FOOTER
@@ -1439,6 +1535,10 @@ button, input, textarea, select { font: inherit; }
   .contact__grid { grid-template-columns: 1fr; --form-offset: 0; }
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .footer__brand { grid-column: 1 / -1; }
+  .steps { grid-template-columns: repeat(2, 1fr); row-gap: 2.5rem; }
+  .steps::before { display: none; }
+  .faq__grid { grid-template-columns: 1fr; }
+  .faq .section-head { margin-bottom: 0.5rem; }
 }
 
 /* Small laptops / landscape tablets: the full menu is tight here, so trim its spacing */
@@ -1495,7 +1595,7 @@ button, input, textarea, select { font: inherit; }
   .medallion { width: min(64%, 240px); }
 
   /* tighten section rhythm for less scrolling */
-  .approach, .services, .intel, .portfolio, .contact { padding-block: clamp(3.25rem, 9vw, 4.5rem); }
+  .approach, .services, .intel, .portfolio, .contact, .process, .faq { padding-block: clamp(3.25rem, 9vw, 4.5rem); }
   .section-head { margin-bottom: 2.25rem; }
 
   .approach { padding-block: clamp(3.75rem, 11vw, 5rem); }
@@ -1519,7 +1619,12 @@ button, input, textarea, select { font: inherit; }
   .focus-grid { grid-template-columns: 1fr; }
   .form__row { grid-template-columns: 1fr; }
   .footer__grid { grid-template-columns: 1fr; gap: 2rem; }
-  .marquee__track span:not(.marquee__dot) { font-size: 1.15rem; }
+  .steps { grid-template-columns: 1fr; row-gap: 2rem; }
+  .step { display: grid; grid-template-columns: auto 1fr; column-gap: 1.1rem; align-items: start; }
+  .step__no { grid-row: span 2; margin-bottom: 0; }
+  .step__title { margin-top: 0.55rem; }
+  .faq__item p { padding-right: 0; }
+  .marquee__track span:not(.marquee__dot) { font-size: 0.72rem; }
 }
 
 @media (max-width: 460px) {
@@ -1572,4 +1677,134 @@ button, input, textarea, select { font: inherit; }
   .tenet::before { transform: scaleY(0.5); }
   .reach__arcs path, .reach__ends circle { transition-delay: 0s !important; }
   .medallion__shine { display: none; }
+}
+
+/* =========================================================
+   LANGUAGE LINK · FOOTER LINKS
+   ========================================================= */
+.nav__menu a.nav__lang { color: var(--gold); font-size: 0.98rem; }
+.nav__menu a.nav__lang:hover { color: var(--gold-lt); }
+.footer__link {
+  color: var(--muted); margin-inline-start: 0.6rem;
+  display: inline-block; padding-block: 0.7rem;   /* finger-sized tap target */
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2);
+  transition: color 0.2s;
+}
+.footer__link:hover { color: var(--gold-lt); }
+
+/* =========================================================
+   PLAIN DOCUMENT PAGES (privacy notice)
+   ========================================================= */
+.doc { padding-block: clamp(3.5rem, 8vw, 6rem); }
+.doc__inner { max-width: 720px; }
+.doc .section-title { margin-bottom: 0.6rem; }
+.doc__meta { color: var(--muted-2); font-size: 0.85rem; margin-bottom: 2.5rem; }
+.doc h2 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 1.55rem; line-height: 1.25; margin: 2.4rem 0 0.7rem;
+  color: var(--gold-lt);
+}
+.doc p, .doc li { color: #c4bcab; font-size: 1.02rem; line-height: 1.75; }
+.doc p + p { margin-top: 0.9rem; }
+.doc ul { padding-inline-start: 1.2rem; display: grid; gap: 0.45rem; margin-top: 0.6rem; }
+.doc a { color: var(--gold-lt); text-decoration: underline; text-underline-offset: 2px; }
+.doc__back { display: flex; width: fit-content; align-items: center; gap: 0.5rem; margin-bottom: 2rem; color: var(--muted); font-size: 0.9rem; }
+.doc__back:hover { color: var(--gold-lt); }
+
+/* =========================================================
+   ARABIC / RIGHT-TO-LEFT
+   Grids and flex rows mirror by themselves; this block flips the things
+   that were positioned by hand, and adapts the type for Arabic script.
+   ========================================================= */
+[dir="rtl"] {
+  --font-display: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+  --font-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+/* Arabic letters join up: letter-spacing breaks the joins, and slanted italics look wrong.
+   The Latin wordmark keeps its spacing. */
+[dir="rtl"] *:not(.brand__name):not(.brand__sub) { letter-spacing: 0 !important; font-style: normal !important; }
+[dir="rtl"] .brand__text { direction: ltr; }
+
+/* Arabic needs more room between lines than the tight Latin display settings */
+[dir="rtl"] .hero__title { line-height: 1.32; }
+[dir="rtl"] .section-title, [dir="rtl"] .approach .section-title { line-height: 1.4; }
+[dir="rtl"] .manifesto__text { line-height: 1.55; }
+[dir="rtl"] .tenet__title, [dir="rtl"] .service__title, [dir="rtl"] .stage__card h3,
+[dir="rtl"] .focus-card__title, [dir="rtl"] .step__title, [dir="rtl"] .faq__item summary,
+[dir="rtl"] .reach__line { line-height: 1.5; }
+[dir="rtl"] .approach .section-title .line { padding: 0.12em 0 0.2em 0.14em; margin-bottom: -0.2em; }
+[dir="rtl"] .eyebrow, [dir="rtl"] .service__kicker, [dir="rtl"] .form__kicker, [dir="rtl"] .reach__kicker,
+[dir="rtl"] .stage__step, [dir="rtl"] .footer__col h4, [dir="rtl"] .manifesto__sign { font-size: 0.86rem; }
+[dir="rtl"] .marquee__track span:not(.marquee__dot) { font-size: 0.95rem; }
+[dir="rtl"] .contact__promises li { font-size: 1.15rem; }
+[dir="rtl"] .nav__menu a.nav__lang { font-family: "Inter", system-ui, sans-serif; font-size: 0.88rem; }
+
+/* decorative lines that fade toward one side */
+[dir="rtl"] .eyebrow__line { background: linear-gradient(270deg, transparent, var(--gold)); }
+[dir="rtl"] .eyebrow--center .eyebrow__line:last-child,
+[dir="rtl"] .manifesto__sign .eyebrow__line:last-child { background: linear-gradient(270deg, var(--gold), transparent); }
+[dir="rtl"] .ornament { direction: ltr; }
+
+/* header */
+[dir="rtl"] .nav__cta { margin-left: 0; margin-right: 0.6rem; }
+[dir="rtl"] .scroll-progress span { transform-origin: right center; background: linear-gradient(270deg, var(--gold-dk), var(--gold-lt)); }
+[dir="rtl"] .btn__arrow { transform: scaleX(-1); }
+[dir="rtl"] .btn:hover .btn__arrow { transform: scaleX(-1) translateX(4px); }
+
+/* hero: copy on the right, emblem on the left */
+[dir="rtl"] .hero__glow {
+  background:
+    radial-gradient(60% 55% at 22% 12%, rgba(201, 162, 90, 0.16), transparent 60%),
+    radial-gradient(50% 50% at 92% 40%, rgba(201, 162, 90, 0.07), transparent 55%);
+}
+[dir="rtl"] .hero__net {
+  -webkit-mask-image: radial-gradient(ellipse 58% 75% at 26% 42%, #000 30%, transparent 78%);
+          mask-image: radial-gradient(ellipse 58% 75% at 26% 42%, #000 30%, transparent 78%);
+}
+[dir="rtl"] .marquee__track { animation-name: marquee-rtl; }
+@keyframes marquee-rtl { to { transform: translateX(50%); } }
+
+/* philosophy */
+[dir="rtl"] .approach .section-intro { padding-left: 0; padding-right: 1.4rem; }
+[dir="rtl"] .approach .section-intro::before { left: auto; right: 0; }
+[dir="rtl"] .tenet {
+  border-left: 0; border-right: 1px solid var(--line);
+  padding-left: 0; padding-right: clamp(1.2rem, 2vw, 1.8rem);
+}
+[dir="rtl"] .tenet::before { left: auto; right: -1px; }
+[dir="rtl"] .tenet__no { padding-right: 0; }
+[dir="rtl"] .tenet:hover .tenet__no { transform: translateX(-6px); }
+
+/* cards */
+[dir="rtl"] .service > .service__numeral { right: auto; left: 0.16em; }
+[dir="rtl"] .focus-card > .focus-card__no { right: auto; left: 1.6rem; }
+[dir="rtl"] .focus-card::before { transform-origin: right; }
+[dir="rtl"] .pipeline.is-rtl .pipeline__fill {
+  transform-origin: right center;
+  background: linear-gradient(270deg, var(--gold-dk), var(--gold-lt));
+}
+
+/* faq, contact */
+[dir="rtl"] .faq__item p { padding: 0 0 1.4rem 2.5rem; }
+[dir="rtl"] .contact__promises { border-left: 0; border-right: 1px solid var(--line-2); }
+[dir="rtl"] .contact__promises li { padding: 0.35rem 1.25rem 0.35rem 0; }
+[dir="rtl"] .contact__promises li::before { left: auto; right: -4px; }
+[dir="rtl"] .field input, [dir="rtl"] .field textarea { background-position: right bottom; }
+[dir="rtl"] .contact__watermark { left: auto; right: -8%; }
+
+@media (max-width: 1000px) {
+  [dir="rtl"] .hero__net {
+    -webkit-mask-image: radial-gradient(ellipse 75% 45% at 50% 22%, #000 25%, transparent 75%);
+            mask-image: radial-gradient(ellipse 75% 45% at 50% 22%, #000 25%, transparent 75%);
+  }
+}
+@media (max-width: 900px) {
+  [dir="rtl"] .nav__menu a.nav__cta { margin: 1rem 0 0; }
+}
+@media (max-width: 760px) {
+  [dir="rtl"] .hero__net {
+    -webkit-mask-image: radial-gradient(ellipse 85% 22% at 50% 16%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(ellipse 85% 22% at 50% 16%, #000 30%, transparent 80%);
+  }
+  [dir="rtl"] .faq__item p { padding-left: 0; }
 }

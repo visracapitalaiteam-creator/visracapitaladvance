@@ -6,6 +6,30 @@
 
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------- text the script itself produces, per page language ---------- */
+  const isArabic = (document.documentElement.lang || "").toLowerCase().startsWith("ar");
+  const T = isArabic
+    ? {
+        openMenu: "فتح القائمة", closeMenu: "إغلاق القائمة",
+        nameErr: "يرجى إدخال اسمك الكامل.",
+        emailEmpty: "يرجى إدخال بريدك الإلكتروني.",
+        emailBad: "يرجى إدخال بريد إلكتروني صحيح.",
+        messageErr: "يرجى إخبارنا بالمزيد (١٠ أحرف على الأقل).",
+        hub: "دبي",
+        subject: "استفسار خاص",
+        fName: "الاسم", fCompany: "الشركة / المكتب العائلي", fEmail: "البريد الإلكتروني", fInterest: "مجال الاهتمام",
+      }
+    : {
+        openMenu: "Open menu", closeMenu: "Close menu",
+        nameErr: "Please enter your full name.",
+        emailEmpty: "Please enter your email.",
+        emailBad: "Please enter a valid email address.",
+        messageErr: "Please tell us a little more (at least 10 characters).",
+        hub: "DUBAI",
+        subject: "Private enquiry",
+        fName: "Name", fCompany: "Company / family office", fEmail: "Email", fInterest: "Area of interest",
+      };
+
   /* ---------- current year ---------- */
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -68,7 +92,7 @@
       menu.classList.toggle("is-open", open);
       toggle.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", String(open));
-      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      toggle.setAttribute("aria-label", open ? T.closeMenu : T.openMenu);
     };
     toggle.addEventListener("click", () => setMenu(!menu.classList.contains("is-open")));
     menu.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
@@ -81,9 +105,9 @@
   const revealTargets = [
     [".section-head", 0],
     [".contact__intro", 0], [".contact__formwrap", 1],
-    [".footer__grid", 0], [".reach", 0], [".ornament", 0],
+    [".footer__grid", 0], [".reach", 0], [".ornament", 0], [".faq__list", 1],
   ];
-  const groups = [".tenet", ".service", ".focus-card"];
+  const groups = [".tenet", ".service", ".focus-card", ".step"];
 
   const toReveal = new Set();
   revealTargets.forEach(([sel, d]) =>
@@ -251,13 +275,16 @@
     const pts = stages.map(centre);
     const [x0, y0] = pts[0], [x1, y1] = pts[pts.length - 1];
     const vertical = Math.abs(y1 - y0) > Math.abs(x1 - x0);
+    // right-to-left pages run the row from right to left: measure by distance, fill from the right
+    const rtl = !vertical && x1 < x0;
     pipe.classList.toggle("is-vertical", vertical);
-    const len = vertical ? y1 - y0 : x1 - x0;
+    pipe.classList.toggle("is-rtl", rtl);
+    const len = vertical ? y1 - y0 : Math.abs(x1 - x0);
     Object.assign(rail.style, vertical
       ? { left: `${x0 - 0.5}px`, top: `${y0}px`, width: "1px", height: `${len}px` }
-      : { left: `${x0}px`, top: `${y0 - 0.5}px`, width: `${len}px`, height: "1px" });
+      : { left: `${Math.min(x0, x1)}px`, top: `${y0 - 0.5}px`, width: `${len}px`, height: "1px" });
     if (wave && !vertical) wave.style.top = `${y0 - 95}px`;
-    pipeGeo = { vertical, len, start: vertical ? y0 : x0, at: pts.map(([x, y]) => (vertical ? y - y0 : x - x0)) };
+    pipeGeo = { vertical, len, start: vertical ? y0 : x0, at: pts.map(([x, y]) => (vertical ? y - y0 : Math.abs(x - x0))) };
   };
 
   const updatePipe = () => {
@@ -551,10 +578,11 @@
           g.beginPath(); g.arc(X, Y, 3 + ph * 16, 0, Math.PI * 2); g.stroke();
         }
         g.fillStyle = "#f3e2b0"; g.beginPath(); g.arc(X, Y, 3, 0, Math.PI * 2); g.fill();
-        g.font = "600 10px Inter, system-ui, sans-serif";
-        if ("letterSpacing" in g) g.letterSpacing = "2px";
+        g.font = isArabic ? '600 13px "IBM Plex Sans Arabic", "Segoe UI", sans-serif' : "600 10px Inter, system-ui, sans-serif";
+        if ("letterSpacing" in g) g.letterSpacing = isArabic ? "0px" : "2px";
+        g.textAlign = "left";   // the canvas inherits the page direction; keep the label to the hub's right
         g.fillStyle = "rgba(243, 239, 230, 0.92)";
-        g.fillText("DUBAI", X + 9, Y - 8);
+        g.fillText(T.hub, X + 9, Y - 8);
       }
     };
 
@@ -625,9 +653,9 @@
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const validators = {
-    name: (v) => v.trim().length >= 2 || "Please enter your full name.",
-    email: (v) => (v.trim() === "" ? "Please enter your email." : emailRe.test(v.trim()) || "Please enter a valid email address."),
-    message: (v) => v.trim().length >= 10 || "Please tell us a little more (at least 10 characters).",
+    name: (v) => v.trim().length >= 2 || T.nameErr,
+    email: (v) => (v.trim() === "" ? T.emailEmpty : emailRe.test(v.trim()) || T.emailBad),
+    message: (v) => v.trim().length >= 10 || T.messageErr,
   };
 
   const validateField = (input) => {
@@ -667,8 +695,17 @@
     });
     if (!ok) { if (firstInvalid) firstInvalid.focus(); return; }
 
-    // no backend — simulate a successful submit
-    form.querySelectorAll("input, textarea, select, button").forEach((el) => (el.disabled = true));
+    // No server: hand the enquiry to the visitor's own email app, addressed to the firm.
+    // Nothing is sent until they press send there, and no third party sees it.
+    const val = (name) => ((form.elements[name] && form.elements[name].value) || "").trim();
+    const lines = [`${T.fName}: ${val("name")}`];
+    if (val("company")) lines.push(`${T.fCompany}: ${val("company")}`);
+    lines.push(`${T.fEmail}: ${val("email")}`);
+    if (val("interest")) lines.push(`${T.fInterest}: ${val("interest")}`);
+    lines.push("", val("message"));
+    const to = form.dataset.to || "visracapitalMD@gmail.com";
+    const mailto = `mailto:${to}?subject=${encodeURIComponent(`${T.subject} — ${val("name")}`)}&body=${encodeURIComponent(lines.join("\n"))}`;
+
     success.hidden = false;
     // stamp the seal (restart the animation if they send another enquiry)
     const wrap = form.closest(".contact__formwrap");
@@ -677,9 +714,7 @@
     const target = wrap || success;
     const y = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 56;
     window.scrollTo({ top: y, behavior: prefersReduced ? "auto" : "smooth" });
-    setTimeout(() => {
-      form.reset();
-      form.querySelectorAll("input, textarea, select, button").forEach((el) => (el.disabled = false));
-    }, 600);
+    // the form keeps what they typed, in case the email app didn't open and they want to try again
+    window.location.href = mailto;
   });
 })();
