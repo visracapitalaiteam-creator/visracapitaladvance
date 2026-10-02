@@ -47,8 +47,11 @@
   const nav = document.querySelector(".nav");
   const glider = document.querySelector(".nav__glider");
   const navLinks = [...document.querySelectorAll('.nav__menu a[href^="#"]:not(.nav__cta)')];
-  const spySections = navLinks.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
-  let activeLink = null, hoverLink = null;
+  // every section is tracked, including the ones with no menu link of their own,
+  // so the highlight clears there instead of staying on the previous link
+  const spySections = [...document.querySelectorAll("main > section")];
+  const linkFor = (id) => navLinks.find((a) => a.getAttribute("href") === `#${id}`) || null;
+  let activeLink = null, hoverLink = null, currentId = "";
 
   const placeGlider = () => {
     if (!glider || !nav) return;
@@ -66,8 +69,10 @@
     if (bar) bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
     // current section = the last one whose top has passed 40% of the viewport
     const line = window.innerHeight * 0.4;
-    let current = null;
-    spySections.forEach((s, i) => { if (s.getBoundingClientRect().top <= line) current = navLinks[i]; });
+    let section = null;
+    spySections.forEach((s) => { if (s.getBoundingClientRect().top <= line) section = s; });
+    currentId = (section && section.id) || "";
+    const current = currentId ? linkFor(currentId) : null;
     if (current !== activeLink) {
       if (activeLink) { activeLink.classList.remove("is-active"); activeLink.removeAttribute("aria-current"); }
       activeLink = current;
@@ -80,6 +85,13 @@
   window.addEventListener("resize", () => { updateHeader(); placeGlider(); });
   navLinks.forEach((a) => a.addEventListener("pointerenter", () => { hoverLink = a; placeGlider(); }));
   if (nav) nav.addEventListener("pointerleave", () => { hoverLink = null; placeGlider(); });
+  // switching language keeps your place: open the other page at the same section
+  document.querySelectorAll('a[hreflang][href$=".html"]').forEach((a) => {
+    const base = a.getAttribute("href");
+    // re-check the position at click time rather than trusting the last scroll update
+    a.addEventListener("click", () => { updateHeader(); a.setAttribute("href", currentId ? `${base}#${currentId}` : base); });
+  });
+
   // the links animate in on load; measure again once they've settled
   setTimeout(placeGlider, 1300);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeGlider);
@@ -97,6 +109,11 @@
     toggle.addEventListener("click", () => setMenu(!menu.classList.contains("is-open")));
     menu.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+    // tapping anywhere outside the open menu closes it, as does growing to the desktop layout
+    document.addEventListener("click", (e) => {
+      if (menu.classList.contains("is-open") && !e.target.closest(".nav")) setMenu(false);
+    });
+    window.addEventListener("resize", () => { if (window.innerWidth > 900 && menu.classList.contains("is-open")) setMenu(false); });
   }
 
   /* ---------- scroll reveal ---------- */
