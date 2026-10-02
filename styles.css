@@ -126,6 +126,13 @@ button, input, textarea, select { font: inherit; }
   background-position: 100% 0;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
+
+  /* The letters are painted by the background, which stops at the element's box.
+     With this tight line-height the tails of g / y / p on the last line (and the
+     tallest tops on the first) fall outside it and were being sliced off. Grow the
+     box with padding and cancel it with an equal negative margin, so nothing moves. */
+  padding-block: 0.14em 0.24em;
+  margin-block: -0.14em -0.24em;
 }
 .is-visible .section-title { animation: sheen 1.9s var(--ease) 0.35s both; }
 @keyframes sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
@@ -645,7 +652,8 @@ button, input, textarea, select { font: inherit; }
 .tenet__no {
   font-family: var(--font-display); font-style: italic; font-weight: 400;
   font-size: clamp(2.6rem, 4vw, 3.4rem); line-height: 1;
-  display: inline-block; margin-bottom: 1.1rem; padding-right: 0.1em;
+  display: inline-block; padding: 0.15em 0.1em 0.15em 0;
+  margin: -0.15em 0 calc(1.1rem - 0.15em);   /* paint room for the figures, same visual spacing */
   background: var(--gold-grad);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: var(--gold);
@@ -1736,7 +1744,11 @@ button, input, textarea, select { font: inherit; }
 [dir="rtl"] .tenet__title, [dir="rtl"] .service__title, [dir="rtl"] .stage__card h3,
 [dir="rtl"] .focus-card__title, [dir="rtl"] .step__title, [dir="rtl"] .faq__item summary,
 [dir="rtl"] .reach__line { line-height: 1.5; }
-[dir="rtl"] .approach .section-title .line { padding: 0.12em 0 0.2em 0.14em; margin-bottom: -0.2em; }
+/* Arabic letters and their marks rise and fall further than Latin ones: give the
+   headline masks and the gold-painted headings more room so nothing is trimmed. */
+[dir="rtl"] .approach .section-title .line { padding: 0.32em 0 0.32em 0.14em; margin: -0.2em 0 -0.32em; }
+[dir="rtl"] .section-title { padding-block: 0.32em; margin-block: -0.32em; }
+[dir="rtl"] .doc .section-title { margin-bottom: 0.3rem; }   /* keep the gap above the date on the privacy page */
 [dir="rtl"] .eyebrow, [dir="rtl"] .service__kicker, [dir="rtl"] .form__kicker, [dir="rtl"] .reach__kicker,
 [dir="rtl"] .stage__step, [dir="rtl"] .footer__col h4, [dir="rtl"] .manifesto__sign { font-size: 0.86rem; }
 [dir="rtl"] .marquee__track span:not(.marquee__dot) { font-size: 0.95rem; }
