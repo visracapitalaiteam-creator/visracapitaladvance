@@ -1875,7 +1875,6 @@ button, input, textarea, select { font: inherit; }
     -webkit-mask-image: radial-gradient(ellipse 110% 30% at 50% 17%, #000 35%, transparent 82%);
             mask-image: radial-gradient(ellipse 110% 30% at 50% 17%, #000 35%, transparent 82%);
   }
-  .medallion__glow { animation: glow-breathe 5s ease-in-out infinite; }
 
   /* ---------- swipeable cards: services and sectors ---------- */
   .service-grid, .focus-grid {
@@ -1909,7 +1908,6 @@ button, input, textarea, select { font: inherit; }
   .dots i.is-on { width: 26px; background: var(--gold-grad); box-shadow: 0 0 10px rgba(232, 206, 143, 0.6); }
 }
 @media (min-width: 761px) { .dots { display: none; } }
-@keyframes glow-breathe { 0%, 100% { opacity: 0.75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.12); } }
 
 /* ---------- full-screen menu (phones and small tablets) ---------- */
 @media (max-width: 900px) {
@@ -1999,23 +1997,9 @@ button, input, textarea, select { font: inherit; }
   }
 }
 
-/* the emblem leans and its layers drift on their own, since there is no cursor to follow */
-@media (hover: none) and (prefers-reduced-motion: no-preference) {
-  .medallion { animation: sway 12s ease-in-out infinite; }
-  .medallion > [data-depth] { animation: drift 12s ease-in-out infinite; }
-  .medallion > .medallion__mark { animation: float 7s ease-in-out infinite, drift 12s ease-in-out infinite; }
-}
-@keyframes sway {
-  0%, 100% { transform: rotateX(7deg)  rotateY(-11deg); }
-  50%      { transform: rotateX(-6deg) rotateY(11deg); }
-}
-@keyframes drift {
-  0%, 100% { translate: calc(var(--d, 0) * -11px) calc(var(--d, 0) * 7px); }
-  50%      { translate: calc(var(--d, 0) * 11px)  calc(var(--d, 0) * -7px); }
-}
 
 @media (prefers-reduced-motion: reduce) {
-  .float-cta::before, .medallion__glow { animation: none !important; }
+  .float-cta::before { animation: none !important; }
   .nav__menu li { opacity: 1; transform: none; }
   .service-grid.has-dots > .service:not(.is-focus),
   .focus-grid.has-dots > .focus-card:not(.is-focus) { opacity: 1; transform: none; }

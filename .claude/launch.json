@@ -9,11 +9,10 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "C:\\Visra web\\.claude\\serve.ps1",
-        "-Port",
-        "3000"
+        "C:\\Visra web\\.claude\\serve.ps1"
       ],
-      "port": 3000
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

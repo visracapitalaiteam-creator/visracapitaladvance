@@ -2,7 +2,8 @@
 # Used by .claude/launch.json so `preview_start` can serve the site with no
 # Node/Python runtime installed. Serves the project root over http://localhost:<port>.
 param(
-  [int]$Port = 3000,
+  # the preview assigns a free port through the PORT environment variable; 3000 is only the fallback
+  [int]$Port = $(if ($env:PORT) { [int]$env:PORT } else { 3000 }),
   [string]$Root = (Split-Path -Parent $PSScriptRoot)  # project root (parent of .claude)
 )
 
