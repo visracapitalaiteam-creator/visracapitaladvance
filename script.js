@@ -371,16 +371,22 @@
   // between the front and back faces (brightest near the faces, like a bevel).
   const coin = medal && medal.querySelector(".coin");
   if (coin && !prefersReduced) {
+    // The edge uses two ready-darkened image files rather than CSS filters: Safari on
+    // iPhone can lose backface-visibility on filtered layers and show both sides at once.
     const src = coin.querySelector(".coin__front").getAttribute("src");
-    const half = 7, layers = 18;
+    const core = src.replace(/\.png$/, "-edge.png"), bevel = src.replace(/\.png$/, "-edge-lt.png");
+    // phones: a slimmer emblem with fewer layers, to keep the 3D scene light
+    const touch = window.matchMedia("(hover: none)").matches;
+    const half = touch ? 5 : 7, layers = touch ? 10 : 18;
+    coin.style.setProperty("--half", `${half}px`);
     const frag = document.createDocumentFragment();
     ["coin__edge", "coin__edge coin__edge--back"].forEach((cls) => {
       for (let i = 0; i < layers; i++) {
         const z = -half + 0.4 + (i / (layers - 1)) * (half * 2 - 0.8);
         const img = new Image();
-        img.src = src; img.alt = ""; img.className = cls;
+        img.src = Math.abs(z) > half * 0.62 ? bevel : core;   // lighter next to each face
+        img.alt = ""; img.className = cls;
         img.style.setProperty("--z", `${z.toFixed(2)}px`);
-        img.style.setProperty("--b", (0.42 + 0.28 * Math.abs(z / half)).toFixed(2));
         frag.append(img);
       }
     });
