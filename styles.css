@@ -1824,3 +1824,199 @@ button, input, textarea, select { font: inherit; }
   }
   [dir="rtl"] .faq__item p { padding-left: 0; }
 }
+
+/* =========================================================
+   PHONE EXPERIENCE
+   Desktop gets its life from the mouse (spotlight, tilt, parallax). A phone
+   has none of that, so this block gives it effects driven by scroll and touch.
+   ========================================================= */
+
+/* ---------- floating call-to-action (hidden everywhere but phones) ---------- */
+.float-cta { display: none; }
+
+@media (max-width: 760px) {
+  .float-cta {
+    position: fixed; z-index: 90;
+    left: 50%; bottom: max(1rem, env(safe-area-inset-bottom));
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    padding: 0.85rem 1.45rem;
+    border-radius: 100px;
+    background: var(--gold-grad);
+    color: #1c1305; font-weight: 600; font-size: 0.94rem;
+    box-shadow: 0 14px 36px -10px rgba(0, 0, 0, 0.75), 0 6px 22px -8px rgba(201, 162, 90, 0.7);
+    white-space: nowrap;
+    transform: translate(-50%, 160%);
+    opacity: 0; pointer-events: none;
+    transition: transform 0.55s var(--ease), opacity 0.4s var(--ease);
+    overflow: hidden;
+  }
+  .float-cta.is-on { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+  .float-cta::before {   /* a light passes across it now and then */
+    content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: skewX(-20deg);
+    animation: cta-sweep 5.5s var(--ease) 1.5s infinite;
+  }
+  .float-cta.is-on:active { transform: translate(-50%, 0) scale(0.97); }
+  [dir="rtl"] .float-cta svg { transform: scaleX(-1); }
+  html.is-menu-open .float-cta { opacity: 0; pointer-events: none; }
+  /* leave room so the button never sits on the legal text in the footer */
+  .site-footer { padding-bottom: 4.5rem; }
+
+  /* ---------- hero: bigger emblem, constellation across the whole top ---------- */
+  .medallion { width: min(72%, 280px); }
+  .hero__visual { max-width: none; }
+  /* keep the first button on the opening screen */
+  .hero__grid { gap: 1.1rem; }
+  .hero__lead { margin-top: 1.15rem; font-size: 1.02rem; }
+  .hero__actions { margin-top: 1.5rem; }
+  .hero .eyebrow { margin-bottom: 1rem; }
+  .hero__net, [dir="rtl"] .hero__net {
+    -webkit-mask-image: radial-gradient(ellipse 110% 30% at 50% 17%, #000 35%, transparent 82%);
+            mask-image: radial-gradient(ellipse 110% 30% at 50% 17%, #000 35%, transparent 82%);
+  }
+  .medallion__glow { animation: glow-breathe 5s ease-in-out infinite; }
+
+  /* ---------- swipeable cards: services and sectors ---------- */
+  .service-grid, .focus-grid {
+    --gutter: 1.25rem;
+    display: flex; gap: 0.85rem;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 0.6rem var(--gutter) 1.1rem;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .service-grid::-webkit-scrollbar, .focus-grid::-webkit-scrollbar { display: none; }
+  .service-grid > .service { flex: 0 0 86%; scroll-snap-align: center; }
+  .focus-grid > .focus-card { flex: 0 0 76%; scroll-snap-align: center; }
+  /* cards in a carousel are simply present; the centred one is what lights up */
+  .service-grid > .service.reveal, .focus-grid > .focus-card.reveal {
+    opacity: 1; transform: none; transition-delay: 0s;
+    transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease), opacity 0.5s;
+  }
+  .service-grid.has-dots > .service:not(.is-focus),
+  .focus-grid.has-dots > .focus-card:not(.is-focus) { opacity: 0.62; transform: scale(0.965); }
+  .portfolio__note { margin-top: 1.4rem; }
+
+  .dots { display: flex; justify-content: center; align-items: center; gap: 0.45rem; margin-top: 0.4rem; }
+  .dots i {
+    width: 6px; height: 6px; border-radius: 6px;
+    background: var(--line-2);
+    transition: width 0.45s var(--ease), background 0.3s, box-shadow 0.3s;
+  }
+  .dots i.is-on { width: 26px; background: var(--gold-grad); box-shadow: 0 0 10px rgba(232, 206, 143, 0.6); }
+}
+@media (min-width: 761px) { .dots { display: none; } }
+@keyframes glow-breathe { 0%, 100% { opacity: 0.75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.12); } }
+
+/* ---------- full-screen menu (phones and small tablets) ---------- */
+@media (max-width: 900px) {
+  html.is-menu-open { overflow: hidden; }
+  .nav__menu {
+    height: calc(100vh - 64px); height: calc(100dvh - 64px);
+    max-height: none;
+    justify-content: center; gap: 0;
+    padding: 1.5rem clamp(1.5rem, 7vw, 3rem) 3rem;
+    background:
+      radial-gradient(90% 55% at 85% 8%, rgba(201, 162, 90, 0.14), transparent 62%),
+      radial-gradient(70% 45% at 5% 95%, rgba(201, 162, 90, 0.08), transparent 60%),
+      var(--bg);
+    border-bottom: 0;
+    counter-reset: nav;
+  }
+  .nav__menu li { border-bottom: 1px solid var(--line-soft); }
+  .nav__menu li:last-child, .nav__menu li:nth-last-child(2) { border-bottom: 0; }
+  .nav__menu a {
+    display: flex; align-items: baseline; gap: 1.1rem;
+    padding: 0.8rem 0;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.7rem, 7.2vw, 2.3rem); line-height: 1.15;
+    color: var(--text);
+  }
+  .nav__menu a[href^="#"]:not(.nav__cta)::before {
+    counter-increment: nav; content: "0" counter(nav);
+    font-family: var(--font-body); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em;
+    color: var(--gold);
+  }
+  .nav__menu a.is-active { color: var(--gold-lt); }
+  .nav__menu a.nav__lang { font-size: 1.15rem; padding-top: 1.3rem; color: var(--gold); }
+  .nav__menu a.nav__cta {
+    display: block; margin-top: 1.4rem;
+    font-family: var(--font-body); font-size: 1rem; font-weight: 500;
+    color: #1c1305 !important;
+    background: var(--gold-grad); border-color: transparent;
+    box-shadow: 0 12px 30px -12px rgba(201, 162, 90, 0.7);
+  }
+  /* links arrive one after another when the menu opens */
+  .nav__menu li { opacity: 0; transform: translateY(16px); transition: opacity 0.5s var(--ease), transform 0.6s var(--ease); }
+  .nav__menu.is-open li { opacity: 1; transform: none; }
+  .nav__menu.is-open li:nth-child(1) { transition-delay: 0.08s; }
+  .nav__menu.is-open li:nth-child(2) { transition-delay: 0.13s; }
+  .nav__menu.is-open li:nth-child(3) { transition-delay: 0.18s; }
+  .nav__menu.is-open li:nth-child(4) { transition-delay: 0.23s; }
+  .nav__menu.is-open li:nth-child(5) { transition-delay: 0.28s; }
+  .nav__menu.is-open li:nth-child(6) { transition-delay: 0.34s; }
+  .nav__menu.is-open li:nth-child(7) { transition-delay: 0.40s; }
+  [dir="rtl"] .nav__menu a { font-size: clamp(1.5rem, 6.4vw, 2rem); line-height: 1.5; padding: 0.55rem 0; }
+  [dir="rtl"] .nav__menu a.nav__lang { font-size: 1rem; }
+  [dir="rtl"] .nav__menu a.nav__cta { font-size: 1rem; line-height: 1.6; margin: 1.4rem 0 0; }
+}
+/* phones held sideways are short: pack the menu tighter so it still fits or scrolls */
+@media (max-width: 900px) and (max-height: 520px) {
+  .nav__menu { justify-content: flex-start; padding-block: 0.75rem 2rem; }
+  .nav__menu a, [dir="rtl"] .nav__menu a { font-size: 1.35rem; padding: 0.5rem 0; }
+  .nav__menu a.nav__cta { margin-top: 0.9rem; }
+}
+
+/* ---------- touch devices: effects that replace hover ---------- */
+@media (hover: none) {
+  /* the card nearest the middle of the screen takes the "hover" look */
+  .spot.is-focus {
+    --ring: rgba(232, 206, 143, 0.5);
+    --mx: 78%; --my: 0px;
+    box-shadow: 0 30px 60px -34px rgba(0, 0, 0, 0.9), 0 0 44px -22px rgba(232, 206, 143, 0.55);
+  }
+  .focus-card.is-focus::before { transform: scaleX(1); }
+  .focus-card.is-focus > .focus-card__no { opacity: 1; }
+  .focus-card.is-focus > .focus-card__no::before { width: 32px; }
+  .focus-card.is-focus .focus-card__ico::after { opacity: 1; }
+  .focus-card.is-focus .focus-card__ico { box-shadow: 0 0 24px -6px rgba(232, 206, 143, 0.5); }
+  .service.is-focus > .service__numeral { -webkit-text-stroke-color: rgba(232, 206, 143, 0.36); }
+  .tenet.is-focus::before { transform: scaleY(1); transition-delay: 0s; }
+  .tenet.is-focus .tenet__no { transform: translateX(6px); }
+  [dir="rtl"] .tenet.is-focus .tenet__no { transform: translateX(-6px); }
+  .step.is-focus .step__no {
+    border-color: var(--gold); color: #fff5dc;
+    box-shadow: 0 0 0 6px var(--bg), 0 0 30px -2px rgba(232, 206, 143, 0.6);
+  }
+  .faq__item summary:active { color: var(--gold-lt); }
+  /* a tap leaves a brief gold light under the finger */
+  .spot.is-touched { --ring: rgba(232, 206, 143, 0.6); }
+  .spot.is-touched::after {
+    background: radial-gradient(300px circle at var(--mx) var(--my), rgba(232, 206, 143, 0.2), transparent 55%);
+  }
+}
+
+/* the emblem leans and its layers drift on their own, since there is no cursor to follow */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .medallion { animation: sway 12s ease-in-out infinite; }
+  .medallion > [data-depth] { animation: drift 12s ease-in-out infinite; }
+  .medallion > .medallion__mark { animation: float 7s ease-in-out infinite, drift 12s ease-in-out infinite; }
+}
+@keyframes sway {
+  0%, 100% { transform: rotateX(7deg)  rotateY(-11deg); }
+  50%      { transform: rotateX(-6deg) rotateY(11deg); }
+}
+@keyframes drift {
+  0%, 100% { translate: calc(var(--d, 0) * -11px) calc(var(--d, 0) * 7px); }
+  50%      { translate: calc(var(--d, 0) * 11px)  calc(var(--d, 0) * -7px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-cta::before, .medallion__glow { animation: none !important; }
+  .nav__menu li { opacity: 1; transform: none; }
+  .service-grid.has-dots > .service:not(.is-focus),
+  .focus-grid.has-dots > .focus-card:not(.is-focus) { opacity: 1; transform: none; }
+}

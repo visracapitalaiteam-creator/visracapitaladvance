@@ -102,6 +102,7 @@
   if (toggle && menu) {
     const setMenu = (open) => {
       menu.classList.toggle("is-open", open);
+      document.documentElement.classList.toggle("is-menu-open", open);   // the full-screen menu holds the page still behind it
       toggle.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? T.closeMenu : T.openMenu);
@@ -231,9 +232,11 @@
       document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
       hero.addEventListener("pointermove", (e) => {
         const r = net.getBoundingClientRect();
-        mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.on = e.pointerType === "mouse";
+        mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.on = true;   // a finger bends the field too
       });
       hero.addEventListener("pointerleave", () => (mouse.on = false));
+      // a touch has no "leave": release the field when the finger lifts or the page starts scrolling
+      ["pointerup", "pointercancel"].forEach((ev) => hero.addEventListener(ev, (e) => { if (e.pointerType !== "mouse") mouse.on = false; }));
       start();
     }
     let lastW = w;
@@ -650,6 +653,81 @@
     const release = () => { dragging = false; idleSince = performance.now(); globe.classList.remove("is-dragging"); };
     globe.addEventListener("pointerup", release);
     globe.addEventListener("pointercancel", release);
+  }
+
+  /* ---------- phone: swipeable card rows with progress dots ---------- */
+  // On phones the service and sector grids scroll sideways (CSS). The card nearest
+  // the centre of its row is marked .is-focus and its dot is lit.
+  if ("IntersectionObserver" in window) {
+    document.querySelectorAll(".service-grid, .focus-grid").forEach((row) => {
+      const cards = [...row.children];
+      if (cards.length < 2) return;
+      const dots = document.createElement("div");
+      dots.className = "dots"; dots.setAttribute("aria-hidden", "true");
+      cards.forEach(() => dots.append(document.createElement("i")));
+      row.after(dots);
+      row.classList.add("has-dots");
+      const ratio = new Map();
+      const pick = () => {
+        // on wider screens the row is an ordinary grid: nothing is "centred", so nothing is singled out
+        if (row.scrollWidth <= row.clientWidth + 4) {
+          cards.forEach((c) => c.classList.remove("is-focus"));
+          return;
+        }
+        let best = 0, bestR = -1;
+        cards.forEach((c, i) => { const r = ratio.get(c) || 0; if (r > bestR) { bestR = r; best = i; } });
+        cards.forEach((c, i) => c.classList.toggle("is-focus", i === best));
+        [...dots.children].forEach((d, i) => d.classList.toggle("is-on", i === best));
+      };
+      // how much of each card is visible inside the row decides which one is "centred"
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => ratio.set(e.target, e.intersectionRatio));
+        pick();
+      }, { root: row, threshold: [0, 0.25, 0.5, 0.75, 0.9, 1] });
+      cards.forEach((c) => io.observe(c));
+      window.addEventListener("resize", pick);
+      pick();
+    });
+
+    /* ---------- touch: the item in the middle of the screen takes the hover look ---------- */
+    const band = new IntersectionObserver((entries) => {
+      entries.forEach((e) => e.target.classList.toggle("is-focus", e.isIntersecting));
+    }, { rootMargin: "-38% 0px -38% 0px" });
+    document.querySelectorAll(".tenet, .step").forEach((el) => band.observe(el));
+  }
+
+  /* ---------- touch: a gold light under the finger ---------- */
+  document.querySelectorAll(".spot").forEach((el) => {
+    let timer = 0;
+    el.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--my", `${e.clientY - r.top}px`);
+      el.classList.add("is-touched");
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        el.classList.remove("is-touched");
+        el.style.removeProperty("--mx"); el.style.removeProperty("--my");
+      }, 900);
+    });
+  });
+
+  /* ---------- phone: floating call-to-action ---------- */
+  // Appears once the hero has scrolled away; steps aside when the contact form
+  // (or the footer below it) is on screen, where it would only be in the way.
+  const floatCta = document.querySelector(".float-cta");
+  const contactSection = document.getElementById("contact");
+  if (floatCta && hero && contactSection) {
+    let pending = false;
+    const updateFloat = () => {
+      pending = false;
+      const pastHero = hero.getBoundingClientRect().bottom < 80;
+      const atContact = contactSection.getBoundingClientRect().top < window.innerHeight * 0.75;
+      floatCta.classList.toggle("is-on", pastHero && !atContact);
+    };
+    window.addEventListener("scroll", () => { if (!pending) { pending = true; requestAnimationFrame(updateFloat); } }, { passive: true });
+    updateFloat();
   }
 
   /* ---------- shared scroll / resize loop ---------- */

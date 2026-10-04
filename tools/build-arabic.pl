@@ -45,6 +45,7 @@ my @pairs = (
   ['>Portfolio</a>', '>المحفظة</a>'],
   ['>Contact</a>', '>تواصل معنا</a>'],
   ['>Request access</a>', '>اطلب التواصل</a>'],
+  ['<span>Request access</span>', '<span>اطلب التواصل</span>'],
 
   # ---------- hero ----------
   ['AI-Driven Solutions', 'حلول يقودها الذكاء الاصطناعي'],

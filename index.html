@@ -112,19 +112,19 @@
         <div class="hero__visual" aria-hidden="true">
           <!-- Layers sit at different depths; JS tilts the whole piece and shifts each layer. -->
           <div class="medallion">
-            <div class="medallion__glow" data-depth="-0.6"></div>
-            <svg class="medallion__rings" data-depth="-1" viewBox="0 0 400 400" fill="none">
+            <div class="medallion__glow" data-depth="-0.6" style="--d:-0.6"></div>
+            <svg class="medallion__rings" data-depth="-1" style="--d:-1" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--outer" cx="200" cy="200" r="188" fill="none" />
               <circle class="ring ring--scan"  cx="200" cy="200" r="188" fill="none" />
             </svg>
-            <svg class="medallion__rings" data-depth="-0.45" viewBox="0 0 400 400" fill="none">
+            <svg class="medallion__rings" data-depth="-0.45" style="--d:-0.45" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--mid"   cx="200" cy="200" r="150" fill="none" />
               <circle class="ring ring--scan2" cx="200" cy="200" r="150" fill="none" />
             </svg>
-            <svg class="medallion__rings" data-depth="0.1" viewBox="0 0 400 400" fill="none">
+            <svg class="medallion__rings" data-depth="0.1" style="--d:0.1" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--inner" cx="200" cy="200" r="118" fill="none" />
             </svg>
-            <div class="medallion__mark" data-depth="0.9">
+            <div class="medallion__mark" data-depth="0.9" style="--d:0.9">
               <!-- Solid 3D emblem: front + back faces, JS stacks edge layers between them -->
               <div class="coin">
                 <img class="medallion__logo coin__front" src="assets/visra-mark.png" alt="" width="150" height="150" />
@@ -684,6 +684,12 @@
       <p class="footer__legal">This website is for informational purposes only and does not constitute an offer, solicitation, or investment advice. Investing involves risk, including the possible loss of capital. Structured in the United Arab Emirates.</p>
     </div>
   </footer>
+  <!-- Phone only: floating call-to-action, shown once the hero has scrolled away -->
+  <a class="float-cta" href="#contact">
+    <span>Request access</span>
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+
 
   <script src="script.js"></script>
 </body>
