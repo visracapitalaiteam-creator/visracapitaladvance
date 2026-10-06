@@ -429,7 +429,7 @@ button, input, textarea, select { font: inherit; }
 /* 3D: the medallion leans toward the cursor; each layer is shifted by JS
    (via the `translate` property, so it composes with spins and the float). */
 .hero__visual { perspective: 1000px; }   /* shared camera for the tilt and the spinning emblem */
-.medallion { transform-style: preserve-3d; will-change: transform; }
+.medallion { will-change: transform; }
 .medallion > [data-depth] { will-change: translate; }
 .ring { fill: none; }
 .ring--outer { stroke: var(--line); stroke-width: 1; }
@@ -455,44 +455,15 @@ button, input, textarea, select { font: inherit; }
 .medallion__mark {
   position: relative; z-index: 2;
   width: 40%;
-  transform-style: preserve-3d;
   animation: float 7s ease-in-out infinite;
 }
 
-/* Solid gold emblem turning on its axis. The faces sit ±7px out from the
-   centre; JS fills the gap with darker stacked copies, which read as the
-   metal's edge whenever it turns side-on. Nothing inside this 3D scene uses a
-   CSS filter or blend mode: Safari on iPhone can drop backface-visibility and
-   flatten the scene when they are present, so the edge copies are separate,
-   pre-darkened image files instead. */
-.coin {
-  --half: 7px;
-  position: relative;
-  transform-style: preserve-3d;
-  animation: coin-spin 12s linear infinite;
-}
+/* The monogram sits flat and crisp. An earlier version extruded it into a thick,
+   spinning 3D slab, which read as chunky and toy-like; the mark is a flat design
+   and looks best shown that way, with only light moving across it. */
+.coin { position: relative; }
 .coin > img { display: block; width: 100%; height: auto; }
-.coin__front {
-  transform: translateZ(var(--half));
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
-}
-/* turned to face backwards, so from behind the monogram reads the right way round */
-.coin__back {
-  position: absolute; inset: 0;
-  transform: rotateY(180deg) translateZ(var(--half));
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
-}
-/* Two edge stacks, each only visible from its own side, so the monogram reads
-   correctly from the front and the back. They trade places exactly side-on,
-   where both stacks have the same silhouette. */
-.coin > .coin__edge {
-  position: absolute; inset: 0;
-  transform: translateZ(var(--z));
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
-}
-.coin > .coin__edge--back { transform: rotateY(180deg) translateZ(var(--z)); }
-@keyframes coin-spin { to { transform: rotateY(360deg); } }
-.medallion__logo { width: 100%; height: auto; }
+.medallion__logo { width: 100%; height: auto; filter: drop-shadow(0 8px 30px rgba(201, 162, 90, 0.35)); }
 /* Specular gleam clipped to the monogram's own shape. */
 .medallion__shine {
   --sx: 0;
@@ -502,9 +473,6 @@ button, input, textarea, select { font: inherit; }
   background: linear-gradient(115deg, transparent 38%, rgba(255, 246, 220, 0.55) 50%, transparent 62%);
   background-size: 300% 100%;
   background-position: calc(50% - var(--sx) * 50%) 0;
-  /* rides just above the front face, and disappears when the back is showing */
-  transform: translateZ(calc(var(--half, 7px) + 0.5px));
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
 }
 /* No mouse to follow (touch, or before JS): let the light pass by on its own. */
 .medallion:not(.is-tracking) .medallion__shine { animation: gleam 7s var(--ease) 1.2s infinite; }
@@ -1682,7 +1650,7 @@ button, input, textarea, select { font: inherit; }
     transition-duration: 0.001ms !important;
   }
   .reveal { opacity: 1; transform: none; }
-  .ring--scan, .ring--scan2, .medallion__mark, .medallion__shine, .coin, .marquee__track,
+  .ring--scan, .ring--scan2, .medallion__mark, .medallion__shine, .marquee__track,
   .wave, .reach__pulse, .focus-card__ico::after, .contact__formwrap::before, .contact__watermark,
   .nav__cta::before, .brand:hover .brand__mark { animation: none !important; }
   .tenet::before { transform: scaleY(0.5); }

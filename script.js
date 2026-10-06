@@ -367,31 +367,6 @@
   /* ---------- hero medallion: 3D lean + layered parallax + gleam ---------- */
   const medal = document.querySelector(".medallion");
 
-  // Thickness for the spinning emblem: darker copies of the monogram stacked
-  // between the front and back faces (brightest near the faces, like a bevel).
-  const coin = medal && medal.querySelector(".coin");
-  if (coin && !prefersReduced) {
-    // The edge uses two ready-darkened image files rather than CSS filters: Safari on
-    // iPhone can lose backface-visibility on filtered layers and show both sides at once.
-    const src = coin.querySelector(".coin__front").getAttribute("src");
-    const core = src.replace(/\.png$/, "-edge.png"), bevel = src.replace(/\.png$/, "-edge-lt.png");
-    // phones: a slimmer emblem with fewer layers, to keep the 3D scene light
-    const touch = window.matchMedia("(hover: none)").matches;
-    const half = touch ? 5 : 7, layers = touch ? 10 : 18;
-    coin.style.setProperty("--half", `${half}px`);
-    const frag = document.createDocumentFragment();
-    ["coin__edge", "coin__edge coin__edge--back"].forEach((cls) => {
-      for (let i = 0; i < layers; i++) {
-        const z = -half + 0.4 + (i / (layers - 1)) * (half * 2 - 0.8);
-        const img = new Image();
-        img.src = Math.abs(z) > half * 0.62 ? bevel : core;   // lighter next to each face
-        img.alt = ""; img.className = cls;
-        img.style.setProperty("--z", `${z.toFixed(2)}px`);
-        frag.append(img);
-      }
-    });
-    coin.insertBefore(frag, coin.querySelector(".coin__back"));
-  }
 
   if (medal && hero && finePointer && !prefersReduced) {
     const layers = [...medal.querySelectorAll("[data-depth]")].map((el) => [el, +el.dataset.depth]);
@@ -399,7 +374,7 @@
     let tx = 0, ty = 0, cx = 0, cy = 0, mraf = 0;
     const tick = () => {
       cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
-      medal.style.transform = `rotateX(${(-cy * 12).toFixed(2)}deg) rotateY(${(cx * 12).toFixed(2)}deg)`;
+      medal.style.transform = `rotateX(${(-cy * 6).toFixed(2)}deg) rotateY(${(cx * 6).toFixed(2)}deg)`;
       layers.forEach(([el, d]) => { el.style.translate = `${(cx * d * 16).toFixed(1)}px ${(cy * d * 16).toFixed(1)}px`; });
       if (shine) shine.style.setProperty("--sx", cx.toFixed(3));
       mraf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001 ? requestAnimationFrame(tick) : 0;
