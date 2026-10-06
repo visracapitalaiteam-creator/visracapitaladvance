@@ -419,10 +419,10 @@ button, input, textarea, select { font: inherit; }
   place-items: center;
 }
 .medallion__glow {
-  position: absolute; inset: 12%;
+  position: absolute; inset: 4%;
   border-radius: 50%;
-  /* soft by construction: no blur filter, which would sit inside the 3D emblem */
-  background: radial-gradient(circle, rgba(201, 162, 90, 0.3), rgba(201, 162, 90, 0.1) 45%, transparent 70%);
+  /* a warm halo: brightest just outside the logo frame, fading to nothing (no blur filter needed) */
+  background: radial-gradient(circle, rgba(232, 206, 143, 0.22), rgba(201, 162, 90, 0.2) 38%, rgba(201, 162, 90, 0.07) 58%, transparent 72%);
 }
 .medallion__rings { position: absolute; inset: 0; width: 100%; height: 100%; }
 
@@ -452,10 +452,40 @@ button, input, textarea, select { font: inherit; }
   transform-origin: center;
   animation: spin-rev 13s linear infinite;
 }
+
+/* Watch-dial details. Everything here turns about the shared centre or stays put,
+   so the rings always remain round and concentric. */
+.ring--ticks {            /* 72 short radial ticks: a wide stroke broken into thin dashes */
+  stroke: rgba(232, 206, 143, 0.34); stroke-width: 7;
+  stroke-dasharray: 1.1 14.345;
+  transform-box: fill-box; transform-origin: center;
+  animation: spin 120s linear infinite;
+}
+.ring-orbit {             /* the two points are opposite each other, so the group's centre is the dial's */
+  fill: var(--gold-lt);
+  transform-box: fill-box; transform-origin: center;
+  animation: spin-rev 38s linear infinite;
+}
+.ring--frame { stroke-width: 1.6; }                 /* bright gold ring framing the logo */
+.ring--inner { stroke: rgba(232, 206, 143, 0.16); } /* hairline just inside it */
+
+/* Opening sequence: each ring expands into place, then the logo arrives.
+   Uses the `scale` property so it never fights the float or the cursor parallax. */
+@media (prefers-reduced-motion: no-preference) {
+  .medallion__glow       { animation: emblem-in 1.6s var(--ease) 0.05s both; }
+  .medallion__rings--1   { animation: emblem-in 1.5s var(--ease) 0.10s both; }
+  .medallion__rings--2   { animation: emblem-in 1.5s var(--ease) 0.26s both; }
+  .medallion__rings--3   { animation: emblem-in 1.4s var(--ease) 0.42s both; }
+}
+@keyframes emblem-in {
+  from { opacity: 0; scale: 0.82; }
+  to   { opacity: 1; scale: 1; }
+}
+
 .medallion__mark {
   position: relative; z-index: 2;
-  width: 40%;
-  animation: float 7s ease-in-out infinite;
+  width: 39%;
+  animation: emblem-in 1.3s var(--ease) 0.62s both, float 7s ease-in-out 1.9s infinite;
 }
 
 /* The monogram sits flat and crisp. An earlier version extruded it into a thick,
@@ -463,19 +493,19 @@ button, input, textarea, select { font: inherit; }
    and looks best shown that way, with only light moving across it. */
 .coin { position: relative; }
 .coin > img { display: block; width: 100%; height: auto; }
-.medallion__logo { width: 100%; height: auto; filter: drop-shadow(0 8px 30px rgba(201, 162, 90, 0.35)); }
+.medallion__logo { width: 100%; height: auto; filter: drop-shadow(0 0 16px rgba(232, 206, 143, 0.32)) drop-shadow(0 10px 26px rgba(201, 162, 90, 0.4)); }
 /* Specular gleam clipped to the monogram's own shape. */
 .medallion__shine {
   --sx: 0;
   position: absolute; inset: 0; pointer-events: none;
   -webkit-mask: url("assets/visra-mark.png") center / contain no-repeat;
           mask: url("assets/visra-mark.png") center / contain no-repeat;
-  background: linear-gradient(115deg, transparent 38%, rgba(255, 246, 220, 0.55) 50%, transparent 62%);
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 248, 228, 0.78) 50%, transparent 62%);
   background-size: 300% 100%;
   background-position: calc(50% - var(--sx) * 50%) 0;
 }
 /* No mouse to follow (touch, or before JS): let the light pass by on its own. */
-.medallion:not(.is-tracking) .medallion__shine { animation: gleam 7s var(--ease) 1.2s infinite; }
+.medallion:not(.is-tracking) .medallion__shine { animation: gleam 6s var(--ease) 2.2s infinite; }
 @keyframes gleam {
   0%        { background-position: 100% 0; }
   45%, 100% { background-position: 0 0; }
@@ -1650,7 +1680,7 @@ button, input, textarea, select { font: inherit; }
     transition-duration: 0.001ms !important;
   }
   .reveal { opacity: 1; transform: none; }
-  .ring--scan, .ring--scan2, .medallion__mark, .medallion__shine, .marquee__track,
+  .ring--scan, .ring--scan2, .ring--ticks, .ring-orbit, .medallion__mark, .medallion__shine, .marquee__track,
   .wave, .reach__pulse, .focus-card__ico::after, .contact__formwrap::before, .contact__watermark,
   .nav__cta::before, .brand:hover .brand__mark { animation: none !important; }
   .tenet::before { transform: scaleY(0.5); }

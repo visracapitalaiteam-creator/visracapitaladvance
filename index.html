@@ -44,7 +44,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css?v=202610061132" />
+  <link rel="stylesheet" href="styles.css?v=202610061135" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
@@ -113,16 +113,39 @@
           <!-- Layers sit at different depths; JS tilts the whole piece and shifts each layer. -->
           <div class="medallion">
             <div class="medallion__glow" data-depth="-0.6" style="--d:-0.6"></div>
-            <svg class="medallion__rings" data-depth="-1" style="--d:-1" viewBox="0 0 400 400" fill="none">
+            <svg class="medallion__rings medallion__rings--1" data-depth="-1" style="--d:-1" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--outer" cx="200" cy="200" r="188" fill="none" />
+              <!-- fine tick marks, like a watch bezel -->
+              <circle class="ring ring--ticks" cx="200" cy="200" r="177" fill="none" />
               <circle class="ring ring--scan"  cx="200" cy="200" r="188" fill="none" />
             </svg>
-            <svg class="medallion__rings" data-depth="-0.45" style="--d:-0.45" viewBox="0 0 400 400" fill="none">
+            <svg class="medallion__rings medallion__rings--2" data-depth="-0.45" style="--d:-0.45" viewBox="0 0 400 400" fill="none">
               <circle class="ring ring--mid"   cx="200" cy="200" r="150" fill="none" />
               <circle class="ring ring--scan2" cx="200" cy="200" r="150" fill="none" />
+              <!-- two points orbiting opposite each other -->
+              <g class="ring-orbit">
+                <circle cx="350" cy="200" r="3" />
+                <circle cx="50"  cy="200" r="2" />
+              </g>
             </svg>
-            <svg class="medallion__rings" data-depth="0.1" style="--d:0.1" viewBox="0 0 400 400" fill="none">
-              <circle class="ring ring--inner" cx="200" cy="200" r="118" fill="none" />
+            <!-- the frame travels with the logo, so the two always stay centred on each other -->
+            <svg class="medallion__rings medallion__rings--3" data-depth="0.9" style="--d:0.9" viewBox="0 0 400 400" fill="none">
+              <defs>
+                <radialGradient id="emblem-disc" cx="50%" cy="42%" r="60%">
+                  <stop offset="0" stop-color="#3a2f1a" stop-opacity="0.75" />
+                  <stop offset="0.6" stop-color="#15120c" stop-opacity="0.7" />
+                  <stop offset="1" stop-color="#09090b" stop-opacity="0.55" />
+                </radialGradient>
+                <linearGradient id="emblem-gold" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#f3e2b0" />
+                  <stop offset="0.35" stop-color="#c9a25a" />
+                  <stop offset="0.65" stop-color="#8a6628" />
+                  <stop offset="1" stop-color="#e8ce8f" />
+                </linearGradient>
+              </defs>
+              <circle class="ring-disc" cx="200" cy="200" r="118" fill="url(#emblem-disc)" />
+              <circle class="ring ring--frame" cx="200" cy="200" r="118" fill="none" stroke="url(#emblem-gold)" />
+              <circle class="ring ring--inner" cx="200" cy="200" r="109" fill="none" />
             </svg>
             <div class="medallion__mark" data-depth="0.9" style="--d:0.9">
               <!-- The monogram, shown flat, with a gleam layer shaped to it -->
@@ -690,6 +713,6 @@
   </a>
 
 
-  <script src="script.js?v=202610061132"></script>
+  <script src="script.js?v=202610061135"></script>
 </body>
 </html>
