@@ -16,6 +16,8 @@
         emailBad: "يرجى إدخال بريد إلكتروني صحيح.",
         messageErr: "يرجى إخبارنا بالمزيد (١٠ أحرف على الأقل).",
         hub: "دبي",
+        copied: "تم نسخ البريد الإلكتروني", linkCopied: "تم نسخ الرابط", copyFail: "تعذّر النسخ — يرجى النسخ يدويًا",
+        localTime: "التوقيت المحلي الآن", timeLocale: "ar-u-nu-latn",
         subject: "استفسار خاص",
         fName: "الاسم", fCompany: "الشركة / المكتب العائلي", fEmail: "البريد الإلكتروني", fInterest: "مجال الاهتمام",
       }
@@ -26,6 +28,8 @@
         emailBad: "Please enter a valid email address.",
         messageErr: "Please tell us a little more (at least 10 characters).",
         hub: "DUBAI",
+        copied: "Email address copied", linkCopied: "Link copied", copyFail: "Could not copy — please copy it by hand",
+        localTime: "Local time now", timeLocale: "en-GB",
         subject: "Private enquiry",
         fName: "Name", fCompany: "Company / family office", fEmail: "Email", fInterest: "Area of interest",
       };
@@ -693,6 +697,90 @@
       }, 900);
     });
   });
+
+  /* ---------- client conveniences ---------- */
+  // Small confirmation message, announced to screen readers too.
+  const toastEl = document.querySelector(".toast");
+  let toastTimer = 0;
+  const toast = (msg) => {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add("is-on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("is-on"), 2400);
+  };
+
+  // Copy text to the clipboard; falls back to the older method where the new one is unavailable.
+  const copyText = (text) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      // if the browser refuses (permissions, embedded views), try the older method before giving up
+      return navigator.clipboard.writeText(text).catch(() => legacyCopy(text));
+    }
+    return legacyCopy(text);
+  };
+  const legacyCopy = (text) => {
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px;";
+      document.body.append(ta); ta.select(); ta.setSelectionRange(0, text.length);
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+      ta.remove();
+      ok ? resolve() : reject(new Error("copy failed"));
+    });
+  };
+  const flash = (btn) => { btn.classList.add("is-done"); setTimeout(() => btn.classList.remove("is-done"), 1800); };
+
+  document.querySelectorAll("[data-copy]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      copyText(btn.dataset.copy).then(() => { toast(T.copied); flash(btn); }, () => toast(T.copyFail));
+    });
+  });
+
+  // Share: the device's own share sheet where there is one, otherwise copy the link.
+  document.querySelectorAll("[data-share]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const url = window.location.href.split("#")[0];
+      if (navigator.share) {
+        navigator.share({ title: document.title, url }).catch(() => {});   // closing the sheet is not an error
+      } else {
+        copyText(url).then(() => { toast(T.linkCopied); flash(btn); }, () => toast(T.copyFail));
+      }
+    });
+  });
+
+  // Print / save as PDF. Answers in the FAQ are opened for the printout and closed again after.
+  document.querySelectorAll("[data-print]").forEach((btn) => btn.addEventListener("click", () => window.print()));
+  let reopened = [];
+  window.addEventListener("beforeprint", () => {
+    reopened = [...document.querySelectorAll("details:not([open])")];
+    reopened.forEach((d) => { d.open = true; });
+  });
+  window.addEventListener("afterprint", () => { reopened.forEach((d) => { d.open = false; }); reopened = []; });
+
+  // Dubai local time, so clients elsewhere know what time it is for the firm.
+  const timeEl = document.querySelector("[data-dubai-time]");
+  if (timeEl && window.Intl && Intl.DateTimeFormat) {
+    try {
+      const fmt = new Intl.DateTimeFormat(T.timeLocale, { timeZone: "Asia/Dubai", hour: "2-digit", minute: "2-digit", hour12: false });
+      const label = document.createTextNode(`${T.localTime} · `), clock = document.createElement("b");
+      timeEl.append(label, clock);
+      const tick = () => { clock.textContent = fmt.format(new Date()); };
+      tick(); setInterval(tick, 20000);
+      timeEl.hidden = false;
+    } catch (err) { /* very old browsers without time-zone support simply do not show it */ }
+  }
+
+  // Back to top: appears after a screen and a half of scrolling.
+  const toTop = document.querySelector(".to-top");
+  if (toTop) {
+    let waiting = false;
+    const updateTop = () => { waiting = false; toTop.classList.toggle("is-on", window.scrollY > window.innerHeight * 1.5); };
+    window.addEventListener("scroll", () => { if (!waiting) { waiting = true; requestAnimationFrame(updateTop); } }, { passive: true });
+    toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" }));
+    updateTop();
+  }
 
   /* ---------- phone: floating call-to-action ---------- */
   // Appears once the hero has scrolled away; steps aside when the contact form

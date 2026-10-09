@@ -44,10 +44,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css?v=202610061135" />
+  <link rel="stylesheet" href="styles.css?v=202610091104" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Visra" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -593,8 +598,29 @@
                 <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 21s-7-6-7-12a7 7 0 0 1 14 0c0 6-7 12-7 12z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
               </span>
               <span>Dubai, United Arab Emirates</span>
+              <span class="contact__time" data-dubai-time hidden></span>
             </li>
           </ul>
+
+          <!-- Quick actions: nothing here needs a server or stores anything -->
+          <div class="quick" role="group" aria-label="Quick actions">
+            <button type="button" class="quick__btn" data-copy="visracapitalMD@gmail.com">
+              <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 15V6a2 2 0 0 1 2-2h9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <span>Copy email</span>
+            </button>
+            <a class="quick__btn" href="assets/visra-capital-group.vcf" download>
+              <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="9" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 19a6 6 0 0 1 12 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="3.5" y="3.5" width="17" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+              <span>Save contact</span>
+            </a>
+            <button type="button" class="quick__btn" data-share>
+              <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 15V4M8 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <span>Share</span>
+            </button>
+            <button type="button" class="quick__btn" data-print>
+              <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><rect x="7" y="14" width="10" height="6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+              <span>Print overview</span>
+            </button>
+          </div>
         </div>
 
         <div class="contact__formwrap">
@@ -706,6 +732,11 @@
       <p class="footer__legal">This website is for informational purposes only and does not constitute an offer, solicitation, or investment advice. Investing involves risk, including the possible loss of capital. Structured in the United Arab Emirates.</p>
     </div>
   </footer>
+  <button class="to-top" type="button" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="toast" role="status" aria-live="polite"></div>
+
   <!-- Phone only: floating call-to-action, shown once the hero has scrolled away -->
   <a class="float-cta" href="#contact">
     <span>Request access</span>
@@ -713,6 +744,6 @@
   </a>
 
 
-  <script src="script.js?v=202610061135"></script>
+  <script src="script.js?v=202610091104"></script>
 </body>
 </html>

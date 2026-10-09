@@ -2006,3 +2006,159 @@ button, input, textarea, select { font: inherit; }
   .service-grid.has-dots > .service:not(.is-focus),
   .focus-grid.has-dots > .focus-card:not(.is-focus) { opacity: 1; transform: none; }
 }
+
+/* =========================================================
+   CLIENT CONVENIENCES — quick actions, local time, back to top, toast
+   ========================================================= */
+.contact__details li { flex-wrap: wrap; }
+.contact__time {
+  flex-basis: 100%;
+  margin-inline-start: calc(44px + 0.95rem);   /* line up under the address text, past the icon */
+  margin-top: -0.55rem;
+  font-size: 0.82rem; color: var(--muted-2);
+}
+.contact__time[hidden] { display: none; }
+.contact__time b { color: var(--gold); font-weight: 500; }
+
+.quick { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 0.4rem; }
+.quick__btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  min-height: 44px; padding: 0.55rem 0.95rem;
+  border: 1px solid var(--line); border-radius: 100px;
+  background: rgba(201, 162, 90, 0.05);
+  color: var(--muted); font-size: 0.86rem; line-height: 1;
+  transition: color 0.2s, border-color 0.2s, background 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.quick__btn svg { color: var(--gold); flex-shrink: 0; }
+.quick__btn.is-done { color: var(--gold-lt); border-color: var(--gold); }
+@media (hover: hover) {
+  .quick__btn:hover { color: var(--text); border-color: var(--line-2); background: rgba(201, 162, 90, 0.1); transform: translateY(-2px); }
+}
+.quick__btn:active { transform: scale(0.97); }
+
+/* Back to top */
+.to-top {
+  position: fixed; z-index: 90;
+  right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom));
+  width: 46px; height: 46px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(13, 13, 16, 0.86);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid var(--line-2); color: var(--gold-lt);
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.8);
+  opacity: 0; transform: translateY(14px); pointer-events: none;
+  transition: opacity 0.35s var(--ease), transform 0.45s var(--ease), border-color 0.2s, background 0.2s;
+}
+.to-top.is-on { opacity: 1; transform: none; pointer-events: auto; }
+@media (hover: hover) { .to-top:hover { border-color: var(--gold); background: rgba(201, 162, 90, 0.14); } }
+.to-top:active { transform: scale(0.94); }
+html.is-menu-open .to-top { opacity: 0; pointer-events: none; }
+[dir="rtl"] .to-top { right: auto; left: max(1.25rem, env(safe-area-inset-left)); }
+@media (max-width: 760px) {
+  /* sits beside the floating Request access pill, on the same line */
+  .to-top { right: max(0.9rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); width: 44px; height: 44px; }
+  [dir="rtl"] .to-top { right: auto; left: max(0.9rem, env(safe-area-inset-left)); }
+}
+
+/* Small confirmation message */
+.toast {
+  position: fixed; z-index: 95;
+  left: 50%; bottom: max(5.2rem, calc(env(safe-area-inset-bottom) + 4.6rem));
+  transform: translate(-50%, 12px);
+  padding: 0.7rem 1.15rem; border-radius: 100px;
+  background: rgba(19, 19, 24, 0.96);
+  border: 1px solid var(--line-2); color: var(--text);
+  font-size: 0.88rem; white-space: nowrap;
+  box-shadow: 0 16px 40px -14px rgba(0, 0, 0, 0.9);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s var(--ease), transform 0.4s var(--ease);
+}
+.toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+/* =========================================================
+   PRINT / SAVE AS PDF — a clean, ink-friendly overview on white
+   ========================================================= */
+@media print {
+  @page { margin: 16mm 14mm; }
+  html, body { background: #fff !important; }
+  body { font-size: 11pt; line-height: 1.5; overflow: visible !important; }
+  body::after { display: none !important; }
+
+  /* dark theme off: black text on white, no glows */
+  * {
+    color: #111 !important;
+    background: none !important;
+    box-shadow: none !important; text-shadow: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    animation: none !important; transition: none !important;
+    opacity: 1 !important; transform: none !important; translate: none !important; scale: none !important;
+    filter: none !important;
+  }
+  .eyebrow, .service__kicker, .stage__step, .tenet__no, .step__no, .focus-card__no, .form__kicker,
+  .hero__title em, .manifesto__text em, .approach .section-title em, .intro-key, .brand__name,
+  .footer__col h4, .reach__kicker, .manifesto__sign { color: #7a5a1e !important; }
+  .section-intro, .service__desc, .tenet__desc, .stage__card p, .focus-card__desc, .step__desc,
+  .faq__item p, .contact__lead, .hero__lead, .footer__blurb, .footer__legal, .portfolio__note { color: #333 !important; }
+
+  /* things that only make sense on a screen */
+  .skip-link, .nav, .scroll-progress, .hero__net, .hero__glow, .hero__visual, .marquee,
+  .reach__map, .pipeline__wave, .pipeline__rail, .stage__node, .service__numeral, .dots,
+  .contact__watermark, .contact__formwrap, .quick, .float-cta, .to-top, .toast, .ornament,
+  .hero__actions, .footer__col, .contact__time { display: none !important; }
+
+  .site-header { position: static !important; border-bottom: 1px solid #bbb !important; margin-bottom: 8mm; }
+  .header__inner { height: auto !important; padding-block: 0 4mm; }
+  .wrap { max-width: none !important; padding-inline: 0 !important; }
+
+  section, .hero, .approach, .services, .intel, .portfolio, .process, .faq, .manifesto, .contact {
+    padding-block: 0 !important; margin-bottom: 9mm; border: 0 !important; overflow: visible !important;
+  }
+  .hero__grid, .contact__grid, .faq__grid, .approach .section-head { display: block !important; padding: 0 !important; }
+  .section-head { margin-bottom: 4mm !important; max-width: none !important; }
+  .section-head--center { text-align: left !important; }
+  .eyebrow { margin-bottom: 2mm !important; }
+  .eyebrow__line { display: none !important; }
+  .hero__title { font-size: 26pt !important; }
+  .section-title, .approach .section-title { font-size: 18pt !important; line-height: 1.2 !important; padding: 0 !important; margin: 0 !important; }
+  .approach .section-title .line { display: inline !important; overflow: visible !important; padding: 0 !important; margin: 0 !important; }
+  .approach .section-intro { padding-left: 0 !important; padding-right: 0 !important; }
+  .approach .section-intro::before, .tenet::before, .focus-card::before, .spot::after,
+  .contact__formwrap::before, .steps::before, .contact__promises li::before { display: none !important; }
+  .manifesto__text { font-size: 15pt !important; max-width: none !important; text-align: left !important; }
+  .manifesto { text-align: left !important; }
+
+  /* grids become simple two-column sheets; cards get a plain outline */
+  .tenets, .service-grid, .focus-grid, .pipeline__stages, .steps {
+    display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 4mm !important;
+    overflow: visible !important; margin: 0 !important; padding: 0 !important;
+  }
+  .tenets, .steps { grid-template-columns: repeat(2, 1fr) !important; }
+  .service, .focus-card, .stage__card, .tenet, .step, .faq__item {
+    border: 1px solid #c8c8c8 !important; border-radius: 3mm !important;
+    padding: 4mm !important; flex: none !important;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .stage { display: block !important; }
+  .service__glyph, .focus-card__ico, .stage__ico, .contact__ico { border: 1px solid #c8c8c8 !important; }
+  .service__glyph svg, .focus-card__ico svg, .stage__ico svg, .contact__ico svg { color: #7a5a1e !important; }
+  .focus-card__ico path, .focus-card__ico rect, .focus-card__ico circle { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+  .tick { border-color: #7a5a1e !important; }
+  .tick::after { border-color: #7a5a1e !important; }
+  .service__list li { border-top-color: #ddd !important; }
+  .faq__list, .faq__item { border-color: #c8c8c8 !important; }
+  .faq__item { margin-bottom: 2mm; }
+  .faq__item summary { padding: 0 0 2mm !important; font-size: 12pt !important; }
+  .faq__item summary::after { display: none !important; }
+  .faq__item p { padding: 0 !important; max-width: none !important; }
+  .contact__promises { border: 0 !important; margin-top: 3mm !important; }
+  .contact__promises li { padding-left: 0 !important; padding-right: 0 !important; font-size: 12pt !important; }
+  .contact__details { margin: 4mm 0 0 !important; }
+  h2, h3 { break-after: avoid; page-break-after: avoid; }
+  .reach { border: 0 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+  .reach__cap { position: static !important; }
+  .site-footer { border-top: 1px solid #bbb !important; padding: 4mm 0 0 !important; }
+  .footer__grid { display: block !important; border: 0 !important; padding-bottom: 2mm !important; }
+  .footer__bar { display: block !important; padding: 0 !important; }
+  .footer__link { display: none !important; }
+  a { text-decoration: none !important; }
+}

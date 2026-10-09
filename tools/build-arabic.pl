@@ -47,6 +47,15 @@ my @pairs = (
   ['>Request access</a>', '>اطلب التواصل</a>'],
   ['<span>Request access</span>', '<span>اطلب التواصل</span>'],
 
+  # ---------- client conveniences ----------
+  ['aria-label="Quick actions"', 'aria-label="إجراءات سريعة"'],
+  ['<span>Copy email</span>', '<span>نسخ البريد الإلكتروني</span>'],
+  ['<span>Save contact</span>', '<span>حفظ جهة الاتصال</span>'],
+  ['<span>Share</span>', '<span>مشاركة</span>'],
+  ['<span>Print overview</span>', '<span>طباعة نبذة</span>'],
+  ['aria-label="Back to top"', 'aria-label="العودة إلى الأعلى"'],
+  ['<meta name="apple-mobile-web-app-title" content="Visra" />', '<meta name="apple-mobile-web-app-title" content="فيسرا" />'],
+
   # ---------- hero ----------
   ['AI-Driven Solutions', 'حلول يقودها الذكاء الاصطناعي'],
   ['Private capital,<br />guided by <em>intelligence</em>.', 'رأس مال خاص،<br />يقوده <em>الذكاء</em>.'],
