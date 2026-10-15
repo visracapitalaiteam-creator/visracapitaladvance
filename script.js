@@ -4,6 +4,12 @@
 (function () {
   "use strict";
 
+  /* ---------- never run inside another site's frame (anti-clickjacking) ---------- */
+  if (window.top !== window.self) {
+    try { window.top.location.replace(window.location.href); }
+    catch (e) { document.documentElement.style.display = "none"; return; }
+  }
+
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- text the script itself produces, per page language ---------- */
