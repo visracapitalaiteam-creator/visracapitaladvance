@@ -2172,53 +2172,64 @@ html.is-menu-open .to-top { opacity: 0; pointer-events: none; }
 /* ----- floating launcher: the flat monogram in a softly glowing setting ----- */
 .vera-fab {
   position: fixed; z-index: 96;
-  left: max(1.25rem, env(safe-area-inset-left));
-  bottom: max(1.25rem, env(safe-area-inset-bottom));
-  width: 60px; height: 60px; border-radius: 50%;
-  display: grid; place-items: center; padding: 0;
-  background: radial-gradient(120% 120% at 30% 25%, #15151b 0%, #0c0c10 72%);
-  border: 1px solid var(--line-2); cursor: pointer;
-  box-shadow: 0 16px 40px -14px rgba(0, 0, 0, 0.85);
-  transition: transform 0.4s var(--ease), border-color 0.25s, box-shadow 0.35s var(--ease), opacity 0.3s;
+  left: max(1.1rem, env(safe-area-inset-left));
+  bottom: max(1.1rem, env(safe-area-inset-bottom));
+  width: 78px; height: 78px; padding: 0; border: 0; background: none; cursor: pointer;
+  transition: transform 0.4s var(--ease), opacity 0.3s;
+}
+/* a glowing cream-gold orb with a friendly face */
+.vera-fab__orb {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #fdf4d6 0%, #f6e2a8 32%, #e8ce8f 52%, #c9a25a 78%, #b07f32 100%);
+  box-shadow:
+    inset 0 -6px 14px rgba(140, 96, 28, 0.45),
+    inset 0 4px 10px rgba(255, 248, 224, 0.6),
+    0 10px 28px -8px rgba(0, 0, 0, 0.75),
+    0 0 24px 2px rgba(201, 162, 90, 0.35);
   animation: vera-breathe 4.8s var(--ease) infinite;
 }
-.vera-fab__ring { position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--line); pointer-events: none; }
-.vera-fab__mark {
-  width: 34px; height: 34px;
-  background: url("assets/visra-mark.png") center / contain no-repeat;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
+.vera-fab__orb::before {   /* faint halo ring, like the reference */
+  content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  border: 1px solid rgba(232, 206, 143, 0.4); opacity: 0.6; pointer-events: none;
 }
-.vera-fab__pip {
-  position: absolute; top: 6px; right: 6px; width: 9px; height: 9px; border-radius: 50%;
-  background: var(--gold-lt); box-shadow: 0 0 8px var(--gold-lt); border: 2px solid #0c0c10;
+.vera-fab__eye {
+  position: absolute; top: 29%; width: 7px; height: 11px; border-radius: 50%;
+  background: #2a1f0c; transform-origin: center;
+  animation: vera-blink 5.4s var(--ease) infinite;
+}
+.vera-fab__eye--l { left: 39%; }
+.vera-fab__eye--r { right: 39%; }
+.vera-fab__spark {
+  position: absolute; top: -2px; right: 3px; color: #fdf4d6;
+  filter: drop-shadow(0 0 4px rgba(248, 224, 150, 0.9));
+  animation: vera-twinkle 3.2s var(--ease) infinite;
 }
 .vera-fab__label {
-  position: absolute; left: calc(100% + 12px); top: 50%;
-  white-space: nowrap; padding: 0.5rem 0.9rem; border-radius: 100px;
-  background: rgba(19, 19, 24, 0.97); border: 1px solid var(--line-2); color: var(--text);
-  font-family: var(--font-body); font-size: 0.86rem;
-  box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.85);
-  opacity: 0; pointer-events: none;
-  transform: translateY(-50%) translateX(-6px);
-  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+  position: absolute; left: 50%; bottom: 7px; transform: translateX(-50%);
+  max-width: 3.8em; text-align: center; line-height: 1.05;
+  padding: 0.22rem 0.5rem; border-radius: 12px;
+  background: rgba(14, 12, 8, 0.9); border: 1px solid rgba(232, 206, 143, 0.4);
+  color: var(--gold-lt); font-family: var(--font-body); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.01em;
 }
-.vera-fab.is-hint { animation: none; border-color: var(--gold); box-shadow: 0 16px 40px -14px rgba(0,0,0,0.85), 0 0 24px 2px rgba(201,162,90,0.32); }
-.vera-fab.is-hint .vera-fab__label { opacity: 1; transform: translateY(-50%) translateX(0); }
-.vera-fab:active { transform: scale(0.96); }
+.vera-fab:active { transform: scale(0.95); }
+.vera-fab.is-hint { animation: vera-nudge 1s var(--ease) 2; }
 @media (hover: hover) {
-  .vera-fab:hover { transform: translateY(-3px) scale(1.04); border-color: var(--gold); }
-  .vera-fab:hover .vera-fab__label { opacity: 1; transform: translateY(-50%) translateX(0); }
+  .vera-fab:hover { transform: translateY(-3px) scale(1.05); }
 }
 @keyframes vera-breathe {
-  0%, 100% { box-shadow: 0 16px 40px -14px rgba(0, 0, 0, 0.85), 0 0 0 0 rgba(201, 162, 90, 0); }
-  50%      { box-shadow: 0 16px 40px -14px rgba(0, 0, 0, 0.85), 0 0 22px 2px rgba(201, 162, 90, 0.26); }
+  0%, 100% { box-shadow: inset 0 -6px 14px rgba(140,96,28,0.45), inset 0 4px 10px rgba(255,248,224,0.6), 0 10px 28px -8px rgba(0,0,0,0.75), 0 0 0 0 rgba(201,162,90,0); }
+  50%      { box-shadow: inset 0 -6px 14px rgba(140,96,28,0.45), inset 0 4px 10px rgba(255,248,224,0.6), 0 10px 28px -8px rgba(0,0,0,0.75), 0 0 26px 3px rgba(201,162,90,0.42); }
 }
+@keyframes vera-blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.12); } }
+@keyframes vera-twinkle { 0%, 100% { opacity: 0.55; transform: scale(0.85) rotate(0deg); } 50% { opacity: 1; transform: scale(1.12) rotate(12deg); } }
+@keyframes vera-nudge { 0%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-5px) rotate(-3deg); } 75% { transform: translateY(-2px) rotate(3deg); } }
 
 /* ----- conversation panel ----- */
 .vera {
   position: fixed; z-index: 97;
-  left: max(1.25rem, env(safe-area-inset-left));
-  bottom: calc(60px + max(1.25rem, env(safe-area-inset-bottom)) + 14px);
+  left: max(1.1rem, env(safe-area-inset-left));
+  bottom: calc(78px + max(1.1rem, env(safe-area-inset-bottom)) + 12px);
   width: min(370px, calc(100vw - 2.5rem));
   max-height: min(72vh, 620px);
   display: flex; flex-direction: column; overflow: hidden;
@@ -2307,29 +2318,25 @@ html.is-menu-open .to-top { opacity: 0; pointer-events: none; }
 html.is-menu-open .vera-fab, html.is-menu-open .vera { opacity: 0; pointer-events: none; }
 
 /* ----- right-hand side for Arabic (opposite the back-to-top button, which flips too) ----- */
-[dir="rtl"] .vera-fab { left: auto; right: max(1.25rem, env(safe-area-inset-right)); }
-[dir="rtl"] .vera { left: auto; right: max(1.25rem, env(safe-area-inset-right)); transform-origin: right bottom; }
-[dir="rtl"] .vera-fab__label { left: auto; right: calc(100% + 12px); transform: translateY(-50%) translateX(6px); }
-[dir="rtl"] .vera-fab.is-hint .vera-fab__label,
-[dir="rtl"] .vera-fab:hover .vera-fab__label { transform: translateY(-50%) translateX(0); }
-[dir="rtl"] .vera-fab__pip { right: auto; left: 6px; }
+[dir="rtl"] .vera-fab { left: auto; right: max(1.1rem, env(safe-area-inset-right)); }
+[dir="rtl"] .vera { left: auto; right: max(1.1rem, env(safe-area-inset-right)); transform-origin: right bottom; }
 [dir="rtl"] .vera__id { margin-right: 0; margin-left: auto; }
 [dir="rtl"] .vera__note { margin-right: 0; margin-left: auto; }
 
 /* ----- phones ----- */
 @media (max-width: 760px) {
-  .vera-fab { width: 54px; height: 54px; }
-  .vera-fab__mark { width: 30px; height: 30px; }
+  .vera-fab { width: 70px; height: 70px; }
+  .vera-fab__label { font-size: 0.68rem; }
   .vera {
     left: 0.75rem; right: 0.75rem; width: auto;
-    bottom: calc(54px + max(0.9rem, env(safe-area-inset-bottom)) + 12px);
+    bottom: calc(70px + max(0.9rem, env(safe-area-inset-bottom)) + 12px);
     max-height: 74vh;
   }
   [dir="rtl"] .vera { left: 0.75rem; right: 0.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vera-fab { animation: none; }
+  .vera-fab, .vera-fab__orb, .vera-fab__eye, .vera-fab__spark { animation: none; }
   .vera, .vera-fab, .vera__chip, .vera__close { transition: none; }
   .vera__dots i { animation: none; }
 }
