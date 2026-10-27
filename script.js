@@ -805,6 +805,246 @@
     updateFloat();
   }
 
+  /* ---------- Vera: guided concierge ----------
+     A scripted concierge — no server, no keys, nothing stored. Her answers are
+     drawn from the content already on this page, and every path leads gently to
+     a private enquiry. Built as a shell so a real AI backend can be added later. */
+  const veraRoot = document.querySelector(".vera-root");
+  if (veraRoot) {
+    const fab      = veraRoot.querySelector(".vera-fab");
+    const logEl    = veraRoot.querySelector(".vera__log");
+    const chipsEl  = veraRoot.querySelector(".vera__chips");
+    const closeBtn = veraRoot.querySelector(".vera__close");
+    const restart  = veraRoot.querySelector(".vera__restart");
+
+    const EN = {
+      fab: "Ask Vera", title: "Vera", role: "Visra concierge", close: "Close", restart: "Start over",
+      note: "I share what's published on this site. For anything specific, a partner will reply to your enquiry personally.",
+      greeting: "Good to meet you — I'm Vera, the concierge for Visra Capital Group. How can I help you today?",
+      emailDone: "Done — I've copied visracapitalMD@gmail.com to your clipboard.",
+      emailFail: "You can reach us at visracapitalMD@gmail.com.",
+      start: ["what", "who", "ai", "contact"],
+      topics: {
+        what: { chip: "What Visra does", user: "What does Visra do?",
+          a: "Visra brings four disciplines under one standard of care — private equity, wealth management, trading & markets, and family office — each guided by our own intelligence and by seasoned partners. Which would you like to explore?",
+          next: ["pe", "wealth", "trading", "family"] },
+        pe: { chip: "Private equity", user: "Tell me about private equity.", interest: "Private Equity",
+          a: "We take meaningful positions in companies with real potential and guide management to compound value — from first diligence to a disciplined exit, with AI-powered sourcing informing every step.",
+          next: ["contact", "what"] },
+        wealth: { chip: "Wealth management", user: "Tell me about wealth management.", interest: "Wealth Management",
+          a: "A bespoke plan for every client, shaped around your goals and your appetite for risk, and monitored around the clock by our market intelligence.",
+          next: ["contact", "what"] },
+        trading: { chip: "Trading & markets", user: "Tell me about trading and markets.", interest: "Trading & Markets",
+          a: "The discipline of systematic trading applied to every mandate — how each position is entered, hedged, and unwound as conditions shift.",
+          next: ["contact", "what"] },
+        family: { chip: "Family office", user: "Tell me about family office services.", interest: "Family Office",
+          a: "A single point of trust for everything beyond the portfolio — from governance and succession to the day-to-day details of family life.",
+          next: ["contact", "what"] },
+        who: { chip: "Who you work with", user: "Who do you work with?",
+          a: "High-net-worth individuals and family offices, wherever they are in the world. We work with a limited number of clients, by introduction and enquiry.",
+          next: ["confidential", "contact"] },
+        ai: { chip: "How you use AI", user: "How do you use AI?",
+          a: "A single proprietary system surfaces opportunities, monitors risk continuously, and proposes how allocations should adapt. It informs our partners' judgment — it never replaces it. Every final call is made by people.",
+          next: ["approach", "contact"] },
+        approach: { chip: "Your approach", user: "What's your approach?",
+          a: "Three convictions guide us: machine precision with human judgment, alignment for the long term, and a firm built in the UAE but global in reach.",
+          next: ["where", "contact"] },
+        where: { chip: "Where you're based", user: "Where are you based?",
+          a: "We're structured in the United Arab Emirates and headquartered in Dubai — a modern, remote-first firm serving clients worldwide.",
+          next: ["contact"] },
+        confidential: { chip: "Is it confidential?", user: "Is my enquiry confidential?",
+          a: "Entirely. Every enquiry is treated in strict confidence, and we never share your details. The form here simply opens your own email app — nothing is stored on this website.",
+          next: ["contact"] },
+        contact: { chip: "Speak to the team", user: "I'd like to get in touch.",
+          a: "The best next step is a short private enquiry — tell us a little about what you're building toward, and a partner will respond personally. Shall I take you to the form?",
+          next: ["__form", "__email"] },
+        __form: { chip: "Take me to the form" },
+        __email: { chip: "Copy the email" },
+      },
+    };
+
+    const AR = {
+      fab: "اسألوا فيرا", title: "فيرا", role: "مساعِدة فيسرا", close: "إغلاق", restart: "من البداية",
+      note: "أشارك ما هو منشور على هذا الموقع. ولأي أمر خاص، سيردّ عليكم أحد الشركاء شخصيًا.",
+      greeting: "سعدتُ بلقائكم — أنا فيرا، مساعِدة فيسرا كابيتال غروب. كيف يمكنني مساعدتكم؟",
+      emailDone: "تم — نسختُ العنوان visracapitalMD@gmail.com إلى الحافظة.",
+      emailFail: "يمكنكم مراسلتنا على visracapitalMD@gmail.com.",
+      start: ["what", "who", "ai", "contact"],
+      topics: {
+        what: { chip: "ماذا تقدّم فيسرا", user: "ماذا تقدّم فيسرا؟",
+          a: "تجمع فيسرا أربعة تخصصات تحت معيار واحد من العناية: الملكية الخاصة، وإدارة الثروات، والتداول والأسواق، والمكتب العائلي — يقودها ذكاؤنا الخاص وخبرة شركائنا. أيّها تودّون استكشافه؟",
+          next: ["pe", "wealth", "trading", "family"] },
+        pe: { chip: "الملكية الخاصة", user: "حدّثيني عن الملكية الخاصة.", interest: "الملكية الخاصة",
+          a: "نتّخذ حصصًا مؤثّرة في شركات ذات إمكانات حقيقية، ونوجّه الإدارة لمضاعفة القيمة — من أول فحص نافٍ للجهالة حتى خروج منضبط، مع ذكاء يغذّي كل خطوة.",
+          next: ["contact", "what"] },
+        wealth: { chip: "إدارة الثروات", user: "حدّثيني عن إدارة الثروات.", interest: "إدارة الثروات",
+          a: "خطة خاصة لكل عميل، تُصاغ حول أهدافكم وقدرتكم على تحمّل المخاطر، وتُراقَب على مدار الساعة بذكائنا للأسواق.",
+          next: ["contact", "what"] },
+        trading: { chip: "التداول والأسواق", user: "حدّثيني عن التداول والأسواق.", interest: "التداول والأسواق",
+          a: "انضباط التداول المنهجي مطبَّقًا على كل تفويض — كيف يُدخَل كل مركز ويُحوَّط ويُغلَق مع تغيّر الظروف.",
+          next: ["contact", "what"] },
+        family: { chip: "المكتب العائلي", user: "حدّثيني عن خدمات المكتب العائلي.", interest: "المكتب العائلي",
+          a: "نقطة ثقة واحدة لكل ما هو أبعد من المحفظة — من الحوكمة والخلافة إلى تفاصيل الحياة العائلية اليومية.",
+          next: ["contact", "what"] },
+        who: { chip: "من تخدمون", user: "من تعملون معهم؟",
+          a: "أفراد ومكاتب عائلية من أصحاب الثروات العالية، أينما كانوا في العالم. نعمل مع عدد محدود من العملاء، بالتعريف والاستفسار.",
+          next: ["confidential", "contact"] },
+        ai: { chip: "كيف تستخدمون الذكاء الاصطناعي", user: "كيف تستخدمون الذكاء الاصطناعي؟",
+          a: "نظام واحد خاص يرصد الفرص، ويراقب المخاطر باستمرار، ويقترح كيف ينبغي أن تتكيّف المخصصات. إنه يُثري حكم شركائنا ولا يحلّ محله — كل قرار نهائي يتّخذه أشخاص.",
+          next: ["approach", "contact"] },
+        approach: { chip: "منهجكم", user: "ما منهجكم؟",
+          a: "تقودنا ثلاث قناعات: دقّة الآلة مع حكم الإنسان، والمواءمة على المدى الطويل، وشركة بُنيت في الإمارات لكنها عالمية الأفق.",
+          next: ["where", "contact"] },
+        where: { chip: "أين مقرّكم", user: "أين مقرّكم؟",
+          a: "نحن مُهيكَلون في الإمارات العربية المتحدة ومقرّنا دبي — شركة حديثة تعمل عن بُعد وتخدم العملاء حول العالم.",
+          next: ["contact"] },
+        confidential: { chip: "هل الأمر سرّي", user: "هل استفساري سرّي؟",
+          a: "تمامًا. يُعامَل كل استفسار بسرّية تامة، ولا نشارك بياناتكم أبدًا. النموذج هنا يفتح تطبيق بريدكم فحسب — ولا يُخزَّن شيء على هذا الموقع.",
+          next: ["contact"] },
+        contact: { chip: "التحدث إلى الفريق", user: "أودّ التواصل.",
+          a: "أفضل خطوة تالية استفسار خاص موجز — أخبرونا قليلًا عمّا تبنونه، وسيردّ عليكم أحد الشركاء شخصيًا. هل آخذكم إلى النموذج؟",
+          next: ["__form", "__email"] },
+        __form: { chip: "خذيني إلى النموذج" },
+        __email: { chip: "انسخي البريد" },
+      },
+    };
+
+    const V = isArabic ? AR : EN;
+
+    veraRoot.querySelector(".vera-fab__label").textContent = V.fab;
+    fab.setAttribute("aria-label", V.fab);
+    veraRoot.querySelector(".vera__name").textContent = V.title;
+    veraRoot.querySelector(".vera__role").textContent = V.role;
+    closeBtn.setAttribute("aria-label", V.close);
+    veraRoot.querySelector(".vera__note").textContent = V.note;
+    restart.textContent = V.restart;
+    veraRoot.hidden = false;
+
+    const scrollDown = () => { logEl.scrollTop = logEl.scrollHeight; };
+
+    const addMsg = (who, text) => {
+      const row = document.createElement("div");
+      row.className = "vera__msg vera__msg--" + who;
+      if (who === "vera") {
+        const mono = document.createElement("span");
+        mono.className = "vera__mono"; mono.setAttribute("aria-hidden", "true");
+        row.append(mono);
+      }
+      const bubble = document.createElement("div");
+      bubble.className = "vera__bubble"; bubble.textContent = text;
+      row.append(bubble); logEl.append(row); scrollDown();
+      return row;
+    };
+
+    const addTyping = () => {
+      const row = document.createElement("div");
+      row.className = "vera__msg vera__msg--vera";
+      const mono = document.createElement("span");
+      mono.className = "vera__mono"; mono.setAttribute("aria-hidden", "true");
+      const bubble = document.createElement("div"); bubble.className = "vera__bubble";
+      const dots = document.createElement("span"); dots.className = "vera__dots";
+      dots.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
+      bubble.append(dots); row.append(mono, bubble); logEl.append(row); scrollDown();
+      return row;
+    };
+
+    let lastInterest = "";
+    let gen = 0;         // bumped on restart so a pending reply can't land in a fresh chat
+    let busy = false;
+
+    const choose = (id) => { fn.choose(id); };   // forward ref so chip buttons can call it
+    const renderChips = (ids) => {
+      chipsEl.replaceChildren();
+      (ids || V.start).forEach((id) => {
+        const t = V.topics[id];
+        if (!t) return;
+        const btn = document.createElement("button");
+        btn.type = "button"; btn.className = "vera__chip"; btn.textContent = t.chip;
+        btn.addEventListener("click", () => choose(id));
+        chipsEl.append(btn);
+      });
+    };
+
+    const goToEnquiry = () => {
+      const contact = document.getElementById("contact");
+      if (!contact) return;
+      if (lastInterest) {
+        const r = document.querySelector('input[name="interest"][value="' + lastInterest + '"]');
+        if (r) r.checked = true;
+      }
+      // Land on the form card itself — on phones it sits well below the section's intro.
+      const target = document.querySelector(".contact__formwrap") || contact;
+      const y = target.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 20;
+      window.scrollTo({ top: y, behavior: prefersReduced ? "auto" : "smooth" });
+      const name = document.getElementById("name");
+      if (name) setTimeout(() => { try { name.focus({ preventScroll: true }); } catch (e) { name.focus(); } }, prefersReduced ? 0 : 560);
+    };
+
+    const fn = {};
+    fn.choose = (id) => {
+      const t = V.topics[id];
+      if (!t) return;
+      if (t.interest) lastInterest = t.interest;
+
+      if (id === "__form") { addMsg("user", t.chip); close(); goToEnquiry(); return; }
+      if (id === "__email") {
+        addMsg("user", t.chip); chipsEl.replaceChildren();
+        copyText("visracapitalMD@gmail.com").then(
+          () => { toast(T.copied); addMsg("vera", V.emailDone); renderChips(["__form", "what"]); },
+          () => { toast(T.copyFail); addMsg("vera", V.emailFail); renderChips(["__form"]); }
+        );
+        return;
+      }
+      if (busy) return;
+      addMsg("user", t.user); chipsEl.replaceChildren();
+      const reveal = () => { addMsg("vera", t.a); renderChips(t.next); busy = false; };
+      if (prefersReduced) { reveal(); return; }
+      busy = true;
+      const mine = gen;
+      const typing = addTyping();
+      setTimeout(() => {
+        if (mine !== gen) { busy = false; return; }   // chat was reset while typing
+        typing.remove(); reveal();
+      }, 440 + Math.min(950, t.a.length * 11));
+    };
+
+    let greeted = false;
+    const open = () => {
+      veraRoot.classList.add("is-open");
+      fab.setAttribute("aria-expanded", "true");
+      fab.classList.remove("is-hint");
+      if (!greeted) { greeted = true; addMsg("vera", V.greeting); renderChips(V.start); }
+      setTimeout(() => closeBtn.focus(), prefersReduced ? 0 : 320);
+    };
+    function close() {
+      veraRoot.classList.remove("is-open");
+      fab.setAttribute("aria-expanded", "false");
+    }
+
+    fab.addEventListener("click", () => (veraRoot.classList.contains("is-open") ? close() : open()));
+    closeBtn.addEventListener("click", () => { close(); fab.focus(); });
+    restart.addEventListener("click", () => {
+      gen += 1; busy = false; lastInterest = "";
+      logEl.replaceChildren(); addMsg("vera", V.greeting); renderChips(V.start);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && veraRoot.classList.contains("is-open")) { close(); fab.focus(); }
+    });
+
+    // one gentle nudge per visit if she's left unopened
+    try {
+      if (!sessionStorage.getItem("vera-hint")) {
+        sessionStorage.setItem("vera-hint", "1");
+        setTimeout(() => {
+          if (!veraRoot.classList.contains("is-open")) {
+            fab.classList.add("is-hint");
+            setTimeout(() => fab.classList.remove("is-hint"), 6000);
+          }
+        }, 3600);
+      }
+    } catch (e) { /* private mode: no nudge, no harm */ }
+  }
+
   /* ---------- shared scroll / resize loop ---------- */
   let ticking = false;
   const onFrame = () => { ticking = false; updatePipe(); updateManifesto(); };
