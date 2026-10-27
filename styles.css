@@ -2193,23 +2193,24 @@ html.is-menu-open .to-top { opacity: 0; pointer-events: none; }
   border: 1px solid rgba(232, 206, 143, 0.4); opacity: 0.6; pointer-events: none;
 }
 .vera-fab__eye {
-  position: absolute; top: 29%; width: 7px; height: 11px; border-radius: 50%;
+  position: absolute; top: 27%; width: 7px; height: 11px; border-radius: 50%;
   background: #2a1f0c; transform-origin: center;
   animation: vera-blink 5.4s var(--ease) infinite;
 }
 .vera-fab__eye--l { left: 39%; }
 .vera-fab__eye--r { right: 39%; }
+.vera-fab__smile { position: absolute; left: 50%; top: 47%; transform: translateX(-50%); }
 .vera-fab__spark {
   position: absolute; top: -2px; right: 3px; color: #fdf4d6;
   filter: drop-shadow(0 0 4px rgba(248, 224, 150, 0.9));
   animation: vera-twinkle 3.2s var(--ease) infinite;
 }
 .vera-fab__label {
-  position: absolute; left: 50%; bottom: 7px; transform: translateX(-50%);
-  max-width: 3.8em; text-align: center; line-height: 1.05;
-  padding: 0.22rem 0.5rem; border-radius: 12px;
+  position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%);
+  white-space: nowrap; text-align: center; line-height: 1;
+  padding: 0.2rem 0.5rem; border-radius: 100px;
   background: rgba(14, 12, 8, 0.9); border: 1px solid rgba(232, 206, 143, 0.4);
-  color: var(--gold-lt); font-family: var(--font-body); font-size: 0.72rem; font-weight: 600;
+  color: var(--gold-lt); font-family: var(--font-body); font-size: 0.68rem; font-weight: 600;
   letter-spacing: 0.01em;
 }
 .vera-fab:active { transform: scale(0.95); }
