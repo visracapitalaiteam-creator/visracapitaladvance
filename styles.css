@@ -1682,7 +1682,7 @@ button, input, textarea, select { font: inherit; }
   .reveal { opacity: 1; transform: none; }
   .ring--scan, .ring--scan2, .ring--ticks, .ring-orbit, .medallion__mark, .medallion__shine, .marquee__track,
   .wave, .reach__pulse, .focus-card__ico::after, .contact__formwrap::before, .contact__watermark,
-  .nav__cta::before, .brand:hover .brand__mark { animation: none !important; }
+  .nav__cta::before, .btn--primary::before, .brand:hover .brand__mark { animation: none !important; }
   .tenet::before { transform: scaleY(0.5); }
   .reach__arcs path, .reach__ends circle { transition-delay: 0s !important; }
   .medallion__shine { display: none; }
@@ -2354,3 +2354,27 @@ html.is-menu-open .vera-fab, html.is-menu-open .vera { opacity: 0; pointer-event
   .vera, .vera-fab, .vera__chip, .vera__close { transition: none; }
   .vera__dots i { animation: none; }
 }
+
+/* =========================================================
+   Eye-catching touches — main-CTA shine + section dividers
+   ========================================================= */
+/* The main gold buttons catch the light periodically, echoing the header CTA */
+.btn--primary {
+  position: relative; overflow: hidden;
+  box-shadow: 0 10px 30px -12px rgba(201, 162, 90, 0.6), inset 0 0 0 1px rgba(255, 246, 222, 0.08);
+}
+.btn--primary::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 252, 240, 0.5), transparent);
+  transform: skewX(-20deg); pointer-events: none;
+  animation: cta-sweep 5.5s var(--ease) 1.4s infinite;
+}
+
+/* A fine gold filament draws itself between the main sections as they arrive */
+main > .sep {
+  display: block; width: min(440px, 66%); height: 1px; margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+  transform: scaleX(0); transform-origin: center; opacity: 0;
+  transition: transform 1.2s var(--ease), opacity 0.8s var(--ease);
+}
+main > .sep.is-in { transform: scaleX(1); opacity: 0.75; }

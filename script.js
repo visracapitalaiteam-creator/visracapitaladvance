@@ -167,6 +167,21 @@
     toReveal.forEach((el) => io.observe(el));
   }
 
+  /* ---------- gold dividers that draw themselves between sections ---------- */
+  if ("IntersectionObserver" in window) {
+    const sepIO = new IntersectionObserver((entries, obs) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); obs.unobserve(e.target); } });
+    }, { threshold: 1, rootMargin: "0px 0px -18% 0px" });
+    ["services", "intelligence", "portfolio", "process", "faq", "contact"].forEach((id) => {
+      const sec = document.getElementById(id);
+      if (!sec || !sec.parentNode) return;
+      const sep = document.createElement("span");
+      sep.className = "sep"; sep.setAttribute("aria-hidden", "true");
+      sec.parentNode.insertBefore(sep, sec);
+      if (prefersReduced) sep.classList.add("is-in"); else sepIO.observe(sep);
+    });
+  }
+
   /* ---------- hero: living constellation ---------- */
   // Gold points drift and link up when close; near the cursor they lean in.
   // Paused off-screen / in background tabs; one static frame for reduced motion.
