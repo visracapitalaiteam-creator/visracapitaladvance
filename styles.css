@@ -41,7 +41,11 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: var(--font-body);
-  background: var(--bg);
+  /* a whisper of depth: faint warm light up top, a deeper settle at the foot */
+  background:
+    radial-gradient(130% 80% at 50% 0%, rgba(201, 162, 90, 0.05), transparent 48%),
+    radial-gradient(120% 90% at 50% 100%, rgba(5, 5, 8, 0.55), transparent 55%),
+    var(--bg);
   color: var(--text);
   line-height: 1.65;
   font-size: 16px;
@@ -894,7 +898,7 @@ button, input, textarea, select { font: inherit; }
 /* =========================================================
    INTELLIGENCE LAYER
    ========================================================= */
-.intel { padding-block: clamp(4.5rem, 9vw, 7.5rem); background: var(--bg); overflow: hidden; }
+.intel { padding-block: clamp(4.5rem, 9vw, 7.5rem); background: radial-gradient(58% 55% at 18% 22%, rgba(201, 162, 90, 0.05), transparent 60%), var(--bg); overflow: hidden; }
 
 /* Signal → Risk → Allocation → Oversight, lit in sequence as you scroll.
    JS measures the nodes, sizes the rail between the first and last, and
@@ -1111,7 +1115,7 @@ button, input, textarea, select { font: inherit; }
    ========================================================= */
 .process {
   padding-block: clamp(4.5rem, 9vw, 7.5rem);
-  background: var(--bg);
+  background: radial-gradient(58% 55% at 82% 16%, rgba(201, 162, 90, 0.05), transparent 60%), var(--bg);
   border-top: 1px solid var(--line);
 }
 .steps {
