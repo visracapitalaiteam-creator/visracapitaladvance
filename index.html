@@ -49,7 +49,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css?v=202611091254" />
+  <link rel="stylesheet" href="styles.css?v=202611091307" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
@@ -578,34 +578,54 @@
     <section class="contact" id="contact" aria-labelledby="contact-title">
       <!-- Dubai skyline, drawn in gold to match the site's night-lit look (decorative) -->
       <div class="skyline" aria-hidden="true">
-        <svg class="skyline__svg" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax meet">
+        <svg class="skyline__svg" viewBox="0 0 1200 340" preserveAspectRatio="xMidYMax meet">
           <defs>
             <linearGradient id="sky-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#e8ce8f" stop-opacity="0" />
-              <stop offset="0.4" stop-color="#1c1609" stop-opacity="0.55" />
-              <stop offset="1" stop-color="#0b0a06" stop-opacity="0.92" />
+              <stop offset="0" stop-color="#0a0806" stop-opacity="0" />
+              <stop offset="0.28" stop-color="#15110a" stop-opacity="0.82" />
+              <stop offset="1" stop-color="#08070a" stop-opacity="0.97" />
+            </linearGradient>
+            <linearGradient id="sky-far" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1a150c" stop-opacity="0" />
+              <stop offset="1" stop-color="#1a150c" stop-opacity="0.55" />
             </linearGradient>
             <linearGradient id="sky-edge" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#f3e2b0" stop-opacity="0.9" />
-              <stop offset="1" stop-color="#c9a25a" stop-opacity="0.15" />
+              <stop offset="0" stop-color="#f3e2b0" stop-opacity="0.85" />
+              <stop offset="1" stop-color="#c9a25a" stop-opacity="0.12" />
             </linearGradient>
+            <pattern id="sky-win" width="9" height="11" patternUnits="userSpaceOnUse">
+              <rect x="1.5" y="2" width="2.6" height="3.5" fill="#f3e2b0" opacity="0.16" />
+              <rect x="5.1" y="2" width="2.6" height="3.5" fill="#f3e2b0" opacity="0.09" />
+              <rect x="1.5" y="6.6" width="2.6" height="3.5" fill="#f3e2b0" opacity="0.07" />
+              <rect x="5.1" y="6.6" width="2.6" height="3.5" fill="#f3e2b0" opacity="0.13" />
+            </pattern>
+            <clipPath id="sky-near">
+              <path d="M30 340V206H38V200H78V206H86V340ZM92 340V176H100V162H132V176H140V340ZM146 340V196L166 158L186 196V340ZM192 340V150L205 92L218 150V340ZM222 340V172L234 124L246 172V340ZM252 340V188Q252 170 270 170Q288 170 288 188V340ZM298 340V150Q298 108 322 102Q342 98 344 170V340ZM352 340V206H386V340ZM392 340V180H400V168H432V180H440V340ZM446 340V162H468V340ZM474 340V200H482V186H512V200H520V340ZM556 340L556 150L560 150L560 118L564 118L564 92L568 92L568 68L570 68L571 46L572 26L573 46L574 68L576 68L576 92L580 92L580 118L584 118L584 150L588 150L588 340ZM600 340V176L612 166L636 158L636 340ZM642 340V168H680V340ZM686 340V196H694V180H722V196H730V340ZM736 340V210H768V340ZM774 340V206L810 182V340ZM816 340V200Q816 182 834 182Q852 182 852 200V340ZM858 340V182H866V170H896V182H904V340ZM910 340V158H944V340ZM950 340V194H958V182H986V194H994V340ZM1000 340V200L1020 166L1040 200V340ZM1046 340V212H1078V340ZM1084 340V190H1118V340ZM1124 340V216H1156V340ZM1160 340V202H1186V340Z" />
+            </clipPath>
           </defs>
-          <g fill="url(#sky-fill)" stroke="url(#sky-edge)" stroke-width="1" stroke-linejoin="round">
-            <path d="M20 300V210H70V300ZM70 300V185H104V300ZM104 300V235H150V300ZM150 300V205H186V300ZM250 300V215H300V300ZM300 300V190H330V300ZM390 300V240H430V300ZM430 300V200H468V300ZM468 300V225H512V300ZM512 300V185H548V300ZM548 300V230H576V300ZM624 300V205H660V300ZM660 300V165H706V300ZM706 300V215H740V300ZM740 300V190H784V300ZM784 300V235H820V300ZM890 300V200H940V300ZM940 300V225H978V300ZM978 300V180H1024V300ZM1024 300V215H1060V300ZM1060 300V195H1104V300ZM1104 300V230H1150V300ZM1150 300V205H1182V300Z" />
-            <path d="M190 300V170L202 120L214 170V300ZM216 300V185L228 140L240 185V300Z" />
-            <path d="M338 300V150Q338 118 358 112Q376 108 378 160V300Z" />
-            <path d="M580 300L580 175L588 175L588 130L594 130L594 92L598 92L598 55L600 18L602 55L602 92L606 92L606 130L612 130L612 175L620 175L620 300Z" />
+          <!-- distant haze layer, for depth -->
+          <path fill="url(#sky-far)" d="M0 340V250H40V340ZM60 340V262H110V340ZM130 340V240H176V340ZM210 340V258H250V340ZM280 340V244H330V340ZM360 340V256H410V340ZM440 340V238H486V340ZM520 340V252H566V340ZM600 340V234H648V340ZM680 340V256H726V340ZM760 340V242H806V340ZM840 340V258H888V340ZM920 340V240H968V340ZM1000 340V254H1048V340ZM1080 340V244H1130V340ZM1160 340V258H1200V340Z" />
+          <!-- near buildings: dark body + lit window grid + facade mullions, all clipped to the silhouette -->
+          <g clip-path="url(#sky-near)">
+            <rect x="0" y="0" width="1200" height="340" fill="url(#sky-fill)" />
+            <rect x="0" y="0" width="1200" height="340" fill="url(#sky-win)" />
+            <g stroke="#e8ce8f" stroke-width="0.4" opacity="0.12">
+              <path d="M360 206V340M369 206V340M378 206V340M652 168V340M661 168V340M670 168V340M919 158V340M927 158V340M935 158V340" />
+            </g>
+            <g class="skyline__lights" fill="#fbeec0">
+              <rect class="w" style="--i:0" x="570" y="60" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:5" x="570" y="92" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:2" x="570" y="124" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:8" x="570" y="156" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:4" x="570" y="196" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:9" x="570" y="236" width="2.6" height="3.6" rx="0.5" />
+              <rect class="w" style="--i:6" x="926" y="176" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:3" x="926" y="208" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:10" x="926" y="244" width="2.6" height="3.6" rx="0.5" />
+              <rect class="w" style="--i:7" x="415" y="196" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:1" x="415" y="230" width="2.6" height="3.6" rx="0.5" />
+              <rect class="w" style="--i:2" x="751" y="224" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:5" x="751" y="256" width="2.6" height="3.6" rx="0.5" />
+              <rect class="w" style="--i:8" x="204" y="162" width="2.6" height="3.6" rx="0.5" />
+              <rect class="w" style="--i:1" x="321" y="160" width="2.6" height="3.6" rx="0.5" /><rect class="w" style="--i:9" x="321" y="210" width="2.6" height="3.6" rx="0.5" />
+            </g>
           </g>
+          <!-- lit rooflines -->
+          <path fill="none" stroke="url(#sky-edge)" stroke-width="1.1" stroke-linejoin="round" d="M30 340V206H38V200H78V206H86V340ZM92 340V176H100V162H132V176H140V340ZM146 340V196L166 158L186 196V340ZM192 340V150L205 92L218 150V340ZM222 340V172L234 124L246 172V340ZM252 340V188Q252 170 270 170Q288 170 288 188V340ZM298 340V150Q298 108 322 102Q342 98 344 170V340ZM352 340V206H386V340ZM392 340V180H400V168H432V180H440V340ZM446 340V162H468V340ZM474 340V200H482V186H512V200H520V340ZM556 340L556 150L560 150L560 118L564 118L564 92L568 92L568 68L570 68L571 46L572 26L573 46L574 68L576 68L576 92L580 92L580 118L584 118L584 150L588 150L588 340ZM600 340V176L612 166L636 158L636 340ZM642 340V168H680V340ZM686 340V196H694V180H722V196H730V340ZM736 340V210H768V340ZM774 340V206L810 182V340ZM816 340V200Q816 182 834 182Q852 182 852 200V340ZM858 340V182H866V170H896V182H904V340ZM910 340V158H944V340ZM950 340V194H958V182H986V194H994V340ZM1000 340V200L1020 166L1040 200V340ZM1046 340V212H1078V340ZM1084 340V190H1118V340ZM1124 340V216H1156V340ZM1160 340V202H1186V340Z" />
+          <!-- spires and antennae -->
           <g stroke="url(#sky-edge)" stroke-width="1" fill="none" stroke-linecap="round">
-            <path d="M683 165L683 138M1001 180L1001 158" />
-          </g>
-          <g class="skyline__lights" fill="#f6e4b0">
-            <rect class="w" style="--i:0" x="598.4" y="70" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:5" x="598.4" y="98" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:2" x="598.4" y="126" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:8" x="598.4" y="156" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:4" x="598.4" y="190" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:9" x="598.4" y="224" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:1" x="598.4" y="258" width="2.4" height="3.4" rx="0.5" />
-            <rect class="w" style="--i:6" x="679" y="182" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:3" x="679" y="212" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:10" x="679" y="246" width="2.4" height="3.4" rx="0.5" />
-            <rect class="w" style="--i:7" x="447" y="216" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:2" x="447" y="250" width="2.4" height="3.4" rx="0.5" />
-            <rect class="w" style="--i:11" x="999" y="200" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:4" x="999" y="234" width="2.4" height="3.4" rx="0.5" />
-            <rect class="w" style="--i:8" x="201" y="152" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:1" x="201" y="198" width="2.4" height="3.4" rx="0.5" />
-            <rect class="w" style="--i:5" x="356" y="162" width="2.4" height="3.4" rx="0.5" /><rect class="w" style="--i:9" x="356" y="210" width="2.4" height="3.4" rx="0.5" />
+            <path d="M300 150V92M369 206V150M661 168V116M927 158V104M572 26V8M116 162V142M1101 190V162" />
           </g>
         </svg>
       </div>
@@ -817,6 +837,6 @@
   </div>
 
 
-  <script src="script.js?v=202611091254"></script>
+  <script src="script.js?v=202611091307"></script>
 </body>
 </html>

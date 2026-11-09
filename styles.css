@@ -2400,3 +2400,6 @@ main > .sep.is-in { transform: scaleX(1); opacity: 0.75; }
   animation-delay: calc(var(--i, 0) * 0.33s);
 }
 @keyframes sky-twinkle { 0%, 100% { opacity: 0.16; } 45% { opacity: 0.85; } }
+
+/* Give the skyline clear room below the form so the full towers show */
+.contact { padding-bottom: clamp(205px, 24vw, 330px); }
