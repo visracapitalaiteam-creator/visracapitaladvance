@@ -94,7 +94,7 @@ my @pairs = (
 
   # ---------- services ----------
   ['</span>What we do<span', '</span>ما نقدّمه<span'],
-  ['Four disciplines, one standard of care.', 'أربعة تخصّصات، ومعيار واحد للعناية.'],
+  ['Four disciplines, one <em>standard of care</em>.', 'أربعة تخصّصات، و<em>معيار واحد للعناية</em>.'],
   ['<span class="service__kicker">Private Equity</span>', '<span class="service__kicker">الملكية الخاصة</span>'],
   ['We source, structure, and scale companies.', 'نختار الشركات ونهيكلها وننمّيها.'],
   ['We take meaningful positions in companies with real potential and guide management to compound value, from first diligence through to a disciplined exit.',
@@ -126,7 +126,7 @@ my @pairs = (
 
   # ---------- intelligence ----------
   ['</span>The intelligence layer</p>', '</span>منظومة الذكاء</p>'],
-  ['AI that works quietly <br class="hide-mobile" />behind every decision.', 'ذكاء اصطناعي يعمل بهدوء <br class="hide-mobile" />خلف كل قرار.'],
+  ['AI that works quietly <br class="hide-mobile" />behind every <em>decision</em>.', 'ذكاء اصطناعي يعمل بهدوء <br class="hide-mobile" />خلف كل <em>قرار</em>.'],
   ["Underpinned by dedicated supercomputing infrastructure, a single proprietary system operates across both sides of the firm — sourcing opportunities, monitoring risk, and keeping portfolios aligned to their objectives. It is built to inform our partners' judgment, never to replace it.",
    'بدعم من بنية حوسبة فائقة مخصَّصة، تعمل منظومة واحدة خاصة بنا عبر جانبَي الشركة — ترصد الفرص، وتراقب المخاطر، وتُبقي المحافظ متوافقة مع أهدافها. صُمِّمت لتدعم حكم شركائنا، لا لتحلّ محلّه.'],
   ['>Stage 01<', '>المرحلة 01<'], ['>Stage 02<', '>المرحلة 02<'], ['>Stage 03<', '>المرحلة 03<'], ['>Stage 04<', '>المرحلة 04<'],
@@ -145,7 +145,7 @@ my @pairs = (
 
   # ---------- portfolio ----------
   ['</span>Portfolio</p>', '</span>المحفظة</p>'],
-  ['Where we build conviction.', 'حيث نبني قناعاتنا.'],
+  ['Where we build <em>conviction</em>.', 'حيث نبني <em>قناعاتنا</em>.'],
   ['We concentrate on sectors where technology, capital, and timing intersect — the arenas our intelligence and our partners understand most deeply. These focus areas shape how we deploy capital on behalf of our clients.',
    'نركّز على القطاعات التي تلتقي فيها التقنية ورأس المال والتوقيت — المجالات التي تفهمها منظومتنا وشركاؤنا بأعمق صورة. وهذه المجالات توجّه طريقة توظيفنا لرأس المال نيابةً عن عملائنا.'],
   ['Artificial Intelligence &amp; Deep Tech', 'الذكاء الاصطناعي والتقنيات العميقة'],
@@ -166,7 +166,7 @@ my @pairs = (
   # ---------- how we work ----------
   ['</span>How we work<span', '</span>كيف نعمل<span'],
   ['>How we work</a>', '>كيف نعمل</a>'],
-  ['From first conversation to lasting stewardship.', 'من المحادثة الأولى إلى رعاية دائمة.'],
+  ['From first conversation to lasting <em>stewardship</em>.', 'من المحادثة الأولى إلى <em>رعاية دائمة</em>.'],
   ['<h3 class="step__title">Introduction</h3>', '<h3 class="step__title">التعارف</h3>'],
   ['It begins with a private enquiry. A partner responds personally and in confidence.', 'تبدأ العلاقة باستفسار خاص، يردّ عليه أحد الشركاء شخصيًا وبسرّية.'],
   ['<h3 class="step__title">Discovery</h3>', '<h3 class="step__title">الاستماع</h3>'],
@@ -179,7 +179,7 @@ my @pairs = (
   # ---------- faq ----------
   ['</span>Questions</p>', '</span>أسئلة شائعة</p>'],
   ['>Questions</a>', '>أسئلة شائعة</a>'],
-  ['What clients ask us first.', 'ما يسألنا عنه العملاء أولًا.'],
+  ['What clients ask us <em>first</em>.', 'ما يسألنا عنه العملاء <em>أولًا</em>.'],
   ["If yours isn't here, ask it privately — a partner will answer.", 'إن لم تجدوا سؤالكم هنا، فاطرحوه علينا بسرّية — وسيجيبكم أحد الشركاء.'],
   ['Who does Visra work with?', 'من هم عملاء فيسرا؟'],
   ['High-net-worth individuals and family offices, wherever they are in the world. We work with a limited number of clients, by introduction and enquiry.',
@@ -207,7 +207,7 @@ my @pairs = (
 
   # ---------- contact ----------
   ['</span>Request access</p>', '</span>طلب التواصل</p>'],
-  ['Begin a private conversation.', 'ابدأ محادثة خاصة.'],
+  ['Begin a private <em>conversation</em>.', 'ابدأ <em>محادثة خاصة</em>.'],
   ["We work with a limited number of clients by introduction and enquiry. Tell us a little about what you're building toward, and a partner will respond personally and in confidence.",
    'نعمل مع عدد محدود من العملاء عبر التعريف والاستفسار المباشر. حدّثونا قليلًا عمّا تسعون إليه، وسيردّ عليكم أحد الشركاء شخصيًا وبسرّية.'],
   ['<li>Reviewed personally by a partner</li>', '<li>يراجعه أحد الشركاء شخصيًا</li>'],

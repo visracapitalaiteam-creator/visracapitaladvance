@@ -144,6 +144,13 @@ button, input, textarea, select { font: inherit; }
 }
 .is-visible .section-title { animation: sheen 1.9s var(--ease) 0.35s both; }
 @keyframes sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
+/* one key word per heading stays gold, echoing the hero headline */
+.section-title em {
+  font-style: italic;
+  background: var(--gold-grad);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: var(--gold-lt);
+}
 
 .hero__title, .tenet__title, .service__title, .intel-card h3 { text-wrap: balance; overflow-wrap: break-word; }
 
@@ -2099,7 +2106,7 @@ html.is-menu-open .to-top { opacity: 0; pointer-events: none; }
     filter: none !important;
   }
   .eyebrow, .service__kicker, .stage__step, .tenet__no, .step__no, .focus-card__no, .form__kicker,
-  .hero__title em, .manifesto__text em, .approach .section-title em, .intro-key, .brand__name,
+  .hero__title em, .manifesto__text em, .section-title em, .intro-key, .brand__name,
   .footer__col h4, .reach__kicker, .manifesto__sign { color: #7a5a1e !important; }
   .section-intro, .service__desc, .tenet__desc, .stage__card p, .focus-card__desc, .step__desc,
   .faq__item p, .contact__lead, .hero__lead, .footer__blurb, .footer__legal, .portfolio__note { color: #333 !important; }
