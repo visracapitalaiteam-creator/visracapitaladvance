@@ -185,7 +185,9 @@
   if ("IntersectionObserver" in window) {
     const sepIO = new IntersectionObserver((entries, obs) => {
       entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); obs.unobserve(e.target); } });
-    }, { threshold: 1, rootMargin: "0px 0px -18% 0px" });
+      // threshold 0 (not 1): a 1px line can anti-alias below full visibility on
+      // hi-DPI screens, so "fully visible" may never fire — "any part visible" always does
+    }, { threshold: 0, rootMargin: "0px 0px -18% 0px" });
     ["services", "intelligence", "portfolio", "process", "faq", "contact"].forEach((id) => {
       const sec = document.getElementById(id);
       if (!sec || !sec.parentNode) return;
