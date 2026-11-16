@@ -434,9 +434,11 @@
   // The card presses away under the cursor; the numeral / icon drift at a different
   // rate than the text, which reads as depth. Pointer devices only.
   if (finePointer && !prefersReduced) {
-    document.querySelectorAll(".service, .focus-card").forEach((card) => {
+    document.querySelectorAll(".service, .focus-card, .stage__card, .tenet, .step").forEach((card) => {
       const big = card.classList.contains("service");
-      const max = big ? 5 : 7, lift = big ? -6 : -4;
+      // tenets and steps are open text, not solid cards — tilt them more gently
+      const soft = card.classList.contains("tenet") || card.classList.contains("step");
+      const max = big ? 5 : soft ? 3.5 : 7, lift = big ? -6 : soft ? -3 : -4;
       card.addEventListener("pointermove", (e) => {
         const r = card.getBoundingClientRect();
         const px = clamp(((e.clientX - r.left) / r.width) * 2 - 1);

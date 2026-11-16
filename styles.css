@@ -834,9 +834,14 @@ button, input, textarea, select { font: inherit; }
 
 /* 3D tilt (JS sets an inline transform + --px/--py from -1..1 while hovering).
    Faster transition while tracking; the slower default eases it back flat. */
-.service.is-tilting, .focus-card.is-tilting {
+.service.is-tilting, .focus-card.is-tilting,
+.stage__card.is-tilting, .tenet.is-tilting, .step.is-tilting {
   transition: transform 0.14s ease-out, box-shadow 0.4s var(--ease);
 }
+/* smooth return to flat once settled (mirrors the focus-card pattern, so the
+   entrance reveal is untouched) */
+.tenet.is-settled, .step.is-settled { transition: transform 0.4s var(--ease); }
+.tenet.is-settled.is-tilting, .step.is-settled.is-tilting { transition: transform 0.14s ease-out; }
 .service__head, .service__title, .focus-card__ico, .focus-card__title {
   translate: calc(var(--px, 0) * 5px) calc(var(--py, 0) * 4px);
   transition: translate 0.3s var(--ease);
