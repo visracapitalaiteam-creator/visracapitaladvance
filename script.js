@@ -167,6 +167,20 @@
     toReveal.forEach((el) => io.observe(el));
   }
 
+  /* ---------- floating gold orbs: gentle parallax as you scroll ---------- */
+  const orbLayer = document.querySelector(".orbs");
+  if (orbLayer && !prefersReduced) {
+    const orbs = [...orbLayer.querySelectorAll(".orb")].map((el) => [el, parseFloat(el.dataset.speed) || 0.1]);
+    let orbTick = false;
+    const moveOrbs = () => {
+      orbTick = false;
+      const y = window.scrollY;
+      orbs.forEach(([el, f]) => { el.style.transform = `translate3d(0, ${(-y * f).toFixed(1)}px, 0)`; });
+    };
+    window.addEventListener("scroll", () => { if (!orbTick) { orbTick = true; requestAnimationFrame(moveOrbs); } }, { passive: true });
+    moveOrbs();
+  }
+
   /* ---------- gold dividers that draw themselves between sections ---------- */
   if ("IntersectionObserver" in window) {
     const sepIO = new IntersectionObserver((entries, obs) => {
