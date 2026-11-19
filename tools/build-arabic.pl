@@ -232,7 +232,7 @@ my @pairs = (
   ['value="Not sure yet" /><span>Not sure yet</span>', 'value="لم أحدّد بعد" /><span>لم أحدّد بعد</span>'],
   ['<label for="message">How can we help? ', '<label for="message">كيف يمكننا مساعدتكم؟ '],
   ["Send enquiry\n", "إرسال الاستفسار\n"],
-  ['Your enquiry is treated in strict confidence. We never share your details.', 'نتعامل مع استفساركم بسرّية تامة، ولا نشارك بياناتكم مع أحد.'],
+  ['Your enquiry is treated in strict confidence. We never share your details. See our <a href="privacy.html">Privacy&nbsp;Notice</a>.', 'نتعامل مع استفساركم بسرّية تامة، ولا نشارك بياناتكم مع أحد. اطّلعوا على <a href="privacy-ar.html">إشعار&nbsp;الخصوصية</a>.'],
 
   # ---------- footer ----------
   ['AI-driven private equity and wealth management for individuals and families who think in generations, not quarters.',
@@ -243,6 +243,7 @@ my @pairs = (
   ['<h4>Get in touch</h4>', '<h4>تواصل معنا</h4>'],
   ['Visra Capital Group. All rights reserved.', 'فيسرا كابيتال غروب. جميع الحقوق محفوظة.'],
   ['<a class="footer__link" href="privacy.html">Privacy</a>', '<a class="footer__link" href="privacy-ar.html">الخصوصية</a>'],
+  ['<a class="footer__link" href="terms.html">Terms</a>', '<a class="footer__link" href="terms-ar.html">الشروط</a>'],
   ['<a class="footer__link" href="ar.html" lang="ar" hreflang="ar">العربية</a>', '<a class="footer__link" href="index.html" lang="en" hreflang="en">English</a>'],
   ['This website is for informational purposes only and does not constitute an offer, solicitation, or investment advice. Investing involves risk, including the possible loss of capital. Structured in the United Arab Emirates.',
    'هذا الموقع لأغراض معلوماتية فقط، ولا يشكّل عرضًا أو دعوة أو مشورة استثمارية. ينطوي الاستثمار على مخاطر، منها احتمال خسارة رأس المال. مؤسَّسة في دولة الإمارات العربية المتحدة.'],

@@ -12,7 +12,7 @@
 
   --text:      #f3efe6;   /* primary text on dark */
   --muted:     #a49d8e;   /* secondary text */
-  --muted-2:   #6f6a5f;   /* faint text / legal */
+  --muted-2:   #857f70;   /* faint text / legal — kept above WCAG AA (4.5:1 on --bg) */
 
   --gold:      #c9a25a;   /* primary gold */
   --gold-lt:   #e8ce8f;   /* gold highlight */
@@ -2443,3 +2443,7 @@ main > .sep.is-in { transform: scaleX(1); opacity: 0.75; }
   to   { transform: translate(var(--dx, 0), var(--dy, 0)) scale(1.07); }
 }
 @media (prefers-reduced-motion: reduce) { .orbs { display: none; } }
+
+/* privacy link in the enquiry form note */
+.form__note a { color: var(--gold-lt); text-decoration: underline; text-underline-offset: 2px; }
+.form__note a:hover { color: var(--gold); }
