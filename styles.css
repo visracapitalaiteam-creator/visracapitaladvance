@@ -912,6 +912,31 @@ button, input, textarea, select { font: inherit; }
    ========================================================= */
 .intel { padding-block: clamp(4.5rem, 9vw, 7.5rem); background: radial-gradient(58% 55% at 18% 22%, rgba(201, 162, 90, 0.05), transparent 60%), var(--bg); overflow: hidden; }
 
+/* decorative markets chart strip (abstract, for looks) */
+.market {
+  position: relative; overflow: hidden;
+  height: clamp(132px, 19vw, 188px);
+  margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(19, 19, 24, 0.5), rgba(11, 11, 14, 0.5));
+}
+.market .chart { position: absolute; inset: 0; width: 100%; height: 100%; }
+.market__tag {
+  position: absolute; top: 0.7rem; left: 0.9rem; z-index: 1;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.64rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-family: var(--font-body);
+}
+.market__tag::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold-lt); box-shadow: 0 0 8px var(--gold-lt);
+  animation: market-blink 2.4s ease-in-out infinite;
+}
+@keyframes market-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+[dir="rtl"] .market__tag { left: auto; right: 0.9rem; }
+@media (prefers-reduced-motion: reduce) { .market__tag::before { animation: none; } }
+
 /* Signal → Risk → Allocation → Oversight, lit in sequence as you scroll.
    JS measures the nodes, sizes the rail between the first and last, and
    drives the gold fill; without JS it's a plain row of cards. */

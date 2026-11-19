@@ -244,6 +244,7 @@ my @pairs = (
   ['Visra Capital Group. All rights reserved.', 'فيسرا كابيتال غروب. جميع الحقوق محفوظة.'],
   ['<a class="footer__link" href="privacy.html">Privacy</a>', '<a class="footer__link" href="privacy-ar.html">الخصوصية</a>'],
   ['<a class="footer__link" href="terms.html">Terms</a>', '<a class="footer__link" href="terms-ar.html">الشروط</a>'],
+  ['<span class="market__tag">Markets · live</span>', '<span class="market__tag">الأسواق · مباشر</span>'],
   ['<a class="footer__link" href="ar.html" lang="ar" hreflang="ar">العربية</a>', '<a class="footer__link" href="index.html" lang="en" hreflang="en">English</a>'],
   ['This website is for informational purposes only and does not constitute an offer, solicitation, or investment advice. Investing involves risk, including the possible loss of capital. Structured in the United Arab Emirates.',
    'هذا الموقع لأغراض معلوماتية فقط، ولا يشكّل عرضًا أو دعوة أو مشورة استثمارية. ينطوي الاستثمار على مخاطر، منها احتمال خسارة رأس المال. مؤسَّسة في دولة الإمارات العربية المتحدة.'],

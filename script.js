@@ -289,6 +289,73 @@
     });
   }
 
+  /* ---------- intelligence: decorative live market chart (for looks only) ----------
+     Abstract candlesticks + close line on a slow random walk, no numbers or axes —
+     a markets motif, not real data. Paused off-screen / hidden; static if reduced. */
+  const chart = document.querySelector(".intel .chart");
+  if (chart && chart.getContext && chart.parentElement) {
+    const xc = chart.getContext("2d");
+    const xhost = chart.parentElement;
+    let cw = 0, ch = 0, xraf = 0, xIn = false, lastAdd = 0;
+    const N = 46;
+    let data = [], price = 0.5, trend = 0;
+    const step = () => {
+      trend = Math.max(-0.03, Math.min(0.03, trend + (Math.random() - 0.5) * 0.045));
+      const o = price;
+      price = Math.max(0.14, Math.min(0.86, price + trend + (Math.random() - 0.5) * 0.06));
+      const c = price;
+      return { o, c, h: Math.max(o, c) + Math.random() * 0.045, l: Math.min(o, c) - Math.random() * 0.045 };
+    };
+    const seed = () => { data = []; price = 0.5; trend = 0; for (let i = 0; i <= N; i++) data.push(step()); };
+    const xsize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const r = xhost.getBoundingClientRect(); cw = r.width; ch = r.height;
+      chart.width = Math.round(cw * dpr); chart.height = Math.round(ch * dpr);
+      xc.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    const Y = (v) => ch * 0.86 - v * ch * 0.72;   // candles fill the strip with padding
+    const draw = (slide) => {
+      xc.clearRect(0, 0, cw, ch);
+      xc.strokeStyle = "rgba(232, 206, 143, 0.05)"; xc.lineWidth = 1;
+      for (let g = 0; g < 4; g++) { const y = ch * 0.2 + g * (ch * 0.6 / 3); xc.beginPath(); xc.moveTo(0, y); xc.lineTo(cw, y); xc.stroke(); }
+      const gap = cw / (N - 1), bw = Math.max(2, gap * 0.4);
+      for (let i = 0; i <= N; i++) {
+        const d = data[i]; if (!d) continue;
+        const x = i * gap - slide * gap; if (x < -gap || x > cw + gap) continue;
+        const up = d.c >= d.o;
+        xc.strokeStyle = up ? "rgba(201, 162, 90, 0.5)" : "rgba(150, 128, 86, 0.42)";
+        xc.fillStyle = up ? "rgba(201, 162, 90, 0.3)" : "rgba(128, 108, 72, 0.26)";
+        xc.beginPath(); xc.moveTo(x, Y(d.h)); xc.lineTo(x, Y(d.l)); xc.stroke();
+        const yO = Y(d.o), yC = Y(d.c);
+        xc.fillRect(x - bw / 2, Math.min(yO, yC), bw, Math.max(1.5, Math.abs(yC - yO)));
+      }
+      xc.strokeStyle = "rgba(232, 206, 143, 0.5)"; xc.lineWidth = 1.4; xc.beginPath();
+      let lx = 0, ly = 0;
+      for (let i = 0; i <= N; i++) { const d = data[i]; if (!d) continue; const x = i * gap - slide * gap, y = Y(d.c); i ? xc.lineTo(x, y) : xc.moveTo(x, y); lx = x; ly = y; }
+      xc.stroke();
+      const pulse = prefersReduced ? 1 : 0.6 + 0.4 * Math.sin(performance.now() * 0.004);
+      const gd = xc.createRadialGradient(lx, ly, 0, lx, ly, 11 * pulse + 4);
+      gd.addColorStop(0, "rgba(243, 226, 176, 0.85)"); gd.addColorStop(1, "rgba(243, 226, 176, 0)");
+      xc.fillStyle = gd; xc.beginPath(); xc.arc(lx, ly, 11 * pulse + 4, 0, Math.PI * 2); xc.fill();
+      xc.fillStyle = "#f3e2b0"; xc.beginPath(); xc.arc(lx, ly, 2, 0, Math.PI * 2); xc.fill();
+    };
+    const frame = (now) => {
+      if (!lastAdd) lastAdd = now;
+      if (now - lastAdd > 1400) { data.push(step()); data.shift(); lastAdd = now; }
+      draw(Math.min(1, (now - lastAdd) / 1400));
+      xraf = requestAnimationFrame(frame);
+    };
+    const xrun = () => { if (!xraf && xIn && !document.hidden) xraf = requestAnimationFrame(frame); };
+    const xhalt = () => { cancelAnimationFrame(xraf); xraf = 0; };
+    seed(); xsize();
+    if (prefersReduced) { draw(0); }
+    else {
+      new IntersectionObserver(([e]) => { xIn = e.isIntersecting; xIn ? xrun() : xhalt(); }, { threshold: 0 }).observe(xhost);
+      document.addEventListener("visibilitychange", () => (document.hidden ? xhalt() : xrun()));
+    }
+    if ("ResizeObserver" in window) new ResizeObserver(() => { xsize(); if (prefersReduced || !xraf) draw(0); }).observe(xhost);
+  }
+
   /* ---------- intelligence pipeline ---------- */
   const pipe = document.querySelector(".pipeline");
   const rail = pipe && pipe.querySelector(".pipeline__rail");
