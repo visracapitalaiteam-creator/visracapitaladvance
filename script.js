@@ -359,6 +359,57 @@
     }
   }
 
+  /* ---------- manifesto: slow gold-on-black liquid wash ---------- */
+  // A few soft gold currents drift on slow sine paths and add together over black,
+  // reading as a gentle flowing liquid behind the text. Paused off-screen / hidden.
+  const liquid = document.querySelector(".manifesto .liquid");
+  if (liquid && liquid.getContext && liquid.parentElement) {
+    const lctx = liquid.getContext("2d");
+    const lhost = liquid.parentElement;
+    let lw = 0, lh = 0, lraf = 0, lIn = false;
+    const blobs = [
+      { ax: 0.30, ay: 0.20, sx: 0.11, sy: 0.08, px: 0.0, py: 1.1, r: 0.62, a: 0.14 },
+      { ax: 0.26, ay: 0.24, sx: 0.08, sy: 0.13, px: 2.1, py: 3.4, r: 0.52, a: 0.11 },
+      { ax: 0.34, ay: 0.16, sx: 0.14, sy: 0.07, px: 4.2, py: 0.6, r: 0.46, a: 0.10 },
+      { ax: 0.20, ay: 0.26, sx: 0.06, sy: 0.11, px: 1.3, py: 5.0, r: 0.58, a: 0.09 },
+    ];
+    const lsize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const r = lhost.getBoundingClientRect();
+      lw = r.width; lh = r.height;
+      liquid.width = Math.round(lw * dpr); liquid.height = Math.round(lh * dpr);
+      lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    const ldraw = (t) => {
+      lctx.clearRect(0, 0, lw, lh);
+      lctx.globalCompositeOperation = "lighter";
+      const base = Math.max(lw, lh);
+      for (const b of blobs) {
+        const x = lw * (0.5 + b.ax * Math.sin(t * b.sx + b.px));
+        const y = lh * (0.5 + b.ay * Math.sin(t * b.sy + b.py));
+        const R = base * b.r;
+        const g = lctx.createRadialGradient(x, y, 0, x, y, R);
+        g.addColorStop(0, `rgba(201, 162, 90, ${b.a})`);
+        g.addColorStop(0.5, `rgba(166, 124, 56, ${(b.a * 0.4).toFixed(3)})`);
+        g.addColorStop(1, "rgba(201, 162, 90, 0)");
+        lctx.fillStyle = g;
+        lctx.fillRect(0, 0, lw, lh);
+      }
+      lctx.globalCompositeOperation = "source-over";
+    };
+    const lframe = (now) => { ldraw(now * 0.001); lraf = requestAnimationFrame(lframe); };
+    const lrun = () => { if (!lraf && lIn && !document.hidden) lraf = requestAnimationFrame(lframe); };
+    const lhalt = () => { cancelAnimationFrame(lraf); lraf = 0; };
+    lsize();
+    if (prefersReduced) {
+      ldraw(2.0);
+    } else {
+      new IntersectionObserver(([e]) => { lIn = e.isIntersecting; lIn ? lrun() : lhalt(); }, { threshold: 0 }).observe(lhost);
+      document.addEventListener("visibilitychange", () => (document.hidden ? lhalt() : lrun()));
+    }
+    if ("ResizeObserver" in window) new ResizeObserver(() => { lsize(); if (prefersReduced || !lraf) ldraw(2.0); }).observe(lhost);
+  }
+
   /* ---------- manifesto: words brighten as you scroll ---------- */
   const manifesto = document.querySelector(".manifesto__text");
   let words = [];
