@@ -2420,30 +2420,6 @@ main > .sep.is-in { transform: scaleX(1); opacity: 0.75; }
 /* Give the skyline clear room below the form so the full towers show */
 .contact { padding-bottom: clamp(205px, 24vw, 330px); }
 
-/* =========================================================
-   Floating gold light-orbs (ambient, parallax on scroll)
-   ========================================================= */
-.orbs {
-  position: fixed; inset: 0; overflow: hidden;
-  pointer-events: none; z-index: 1; mix-blend-mode: screen;
-}
-.orb {
-  position: absolute; width: var(--s); height: var(--s);
-  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
-  will-change: transform;
-}
-.orb > i {
-  display: block; width: 100%; height: 100%; border-radius: 50%;
-  background: radial-gradient(circle at 42% 40%,
-    rgba(232, 206, 143, 0.11), rgba(201, 162, 90, 0.04) 38%, transparent 62%);
-  animation: orb-drift var(--t, 16s) ease-in-out infinite alternate;
-}
-@keyframes orb-drift {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(var(--dx, 0), var(--dy, 0)) scale(1.07); }
-}
-@media (prefers-reduced-motion: reduce) { .orbs { display: none; } }
-
 /* privacy link in the enquiry form note */
 .form__note a { color: var(--gold-lt); text-decoration: underline; text-underline-offset: 2px; }
 .form__note a:hover { color: var(--gold); }
