@@ -111,6 +111,8 @@ my @pairs = (
   ['Supercomputer-backed risk modelling', 'نمذجة المخاطر بالحواسيب الفائقة'],
   ['<span class="service__kicker">Trading &amp; Markets</span>', '<span class="service__kicker">التداول والأسواق</span>'],
   ['Systematic execution across markets.', 'تنفيذ منهجي عبر الأسواق.'],
+  ['</span>Markets<span', '</span>الأسواق<span'],
+  ['Systematic across <em>global markets</em>.', 'منهجية عبر <em>الأسواق العالمية</em>.'],
   ['The discipline of systematic trading applied to every mandate — how each position is entered, hedged, and unwound as market conditions shift.',
    'انضباط التداول المنهجي مطبَّقًا على كل تفويض — كيف يُفتح كل مركز ويُتحوَّط له ويُغلق مع تغيّر أحوال السوق.'],
   ['Timed entries &amp; exits, weighed on liquidity', 'دخول وخروج مدروسا التوقيت وفق السيولة'],

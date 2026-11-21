@@ -292,12 +292,12 @@
   /* ---------- intelligence: decorative live market chart (for looks only) ----------
      Abstract candlesticks + close line on a slow random walk, no numbers or axes —
      a markets motif, not real data. Paused off-screen / hidden; static if reduced. */
-  const chart = document.querySelector(".intel .chart");
+  const chart = document.querySelector(".market .chart");
   if (chart && chart.getContext && chart.parentElement) {
     const xc = chart.getContext("2d");
     const xhost = chart.parentElement;
     let cw = 0, ch = 0, xraf = 0, xIn = false, lastAdd = 0;
-    const N = 20;
+    const N = 26;
     let data = [], price = 0.5, trend = 0;
     const step = () => {
       trend = Math.max(-0.045, Math.min(0.045, trend + (Math.random() - 0.5) * 0.05));
@@ -323,11 +323,21 @@
     };
     const draw = (slide) => {
       xc.clearRect(0, 0, cw, ch);
-      const dzx = 11, dzy = -12;   // extrusion toward the upper-right = sense of depth
-      // gridlines drawn on the back plane (offset by the depth vector) so they recede
-      xc.strokeStyle = "rgba(232, 206, 143, 0.055)"; xc.lineWidth = 1;
-      for (let g = 0; g < 4; g++) { const y = ch * 0.24 + g * (ch * 0.54 / 3); xc.beginPath(); xc.moveTo(dzx, y + dzy); xc.lineTo(cw + dzx, y + dzy); xc.stroke(); }
-      const gap = cw / (N - 1), bw = Math.max(5, gap * 0.5);
+      const dz = Math.max(13, ch * 0.075);
+      const dzx = dz * 0.85, dzy = -dz;             // extrusion toward the upper-right = depth
+      const gap = cw / (N - 1), bw = Math.max(5, gap * 0.5), floorY = Y(0);
+      // floor plane receding into depth
+      quad([0, floorY, cw, floorY, cw + dzx, floorY + dzy, dzx, floorY + dzy], "rgba(201, 162, 90, 0.03)");
+      // back wall: horizontal gridlines (offset into depth)
+      xc.strokeStyle = "rgba(232, 206, 143, 0.06)"; xc.lineWidth = 1;
+      for (let g = 0; g <= 3; g++) { const y = ch * 0.24 + g * (ch * 0.52 / 3); xc.beginPath(); xc.moveTo(dzx, y + dzy); xc.lineTo(cw + dzx, y + dzy); xc.stroke(); }
+      // back-wall verticals + floor depth lines every few columns
+      xc.strokeStyle = "rgba(232, 206, 143, 0.04)";
+      for (let i = 0; i <= N; i += 3) {
+        const x = i * gap - slide * gap; if (x < -gap || x > cw + gap) continue;
+        xc.beginPath(); xc.moveTo(x + dzx, ch * 0.24 + dzy); xc.lineTo(x + dzx, floorY + dzy); xc.stroke();
+        xc.beginPath(); xc.moveTo(x, floorY); xc.lineTo(x + dzx, floorY + dzy); xc.stroke();
+      }
       // right-to-left so nearer (left) candles layer over farther ones
       for (let i = N; i >= 0; i--) {
         const d = data[i]; if (!d) continue;

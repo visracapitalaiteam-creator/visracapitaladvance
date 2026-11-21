@@ -2474,3 +2474,19 @@ main > .sep.is-in { transform: scaleX(1); opacity: 0.75; }
           mask-image: radial-gradient(135% 100% at 50% 50%, #000 52%, transparent 100%);
 }
 .manifesto > .wrap { position: relative; z-index: 1; }
+
+/* =========================================================
+   Markets — standalone section with the full 3D chart
+   ========================================================= */
+.markets {
+  padding-block: clamp(4.5rem, 9vw, 7.5rem);
+  background: radial-gradient(60% 55% at 50% 0%, rgba(201, 162, 90, 0.05), transparent 60%), var(--bg-2);
+  border-block: 1px solid var(--line);
+  overflow: hidden;
+}
+.market--full {
+  height: clamp(300px, 44vw, 460px);
+  margin-top: clamp(2rem, 4vw, 3.25rem);
+}
+.market--full .market__tag { top: 1rem; left: 1.1rem; font-size: 0.68rem; }
+[dir="rtl"] .market--full .market__tag { left: auto; right: 1.1rem; }
