@@ -297,16 +297,12 @@
     const xc = chart.getContext("2d");
     const xhost = chart.parentElement;
     let cw = 0, ch = 0, xraf = 0, xIn = false, lastAdd = 0;
-    const N = 26;
+    const N = 40;
     let data = [], price = 0.5, trend = 0;
     const step = () => {
-      trend = Math.max(-0.045, Math.min(0.045, trend + (Math.random() - 0.5) * 0.05));
-      price = Math.max(0.22, Math.min(0.78, price + trend + (Math.random() - 0.5) * 0.08));
-      const c = price;                                  // close drives the line
-      const bodyH = 0.07 + Math.random() * 0.15;        // give each candle a visible body
-      const o = (Math.random() < 0.52 + trend * 5) ? c - bodyH : c + bodyH;
-      const wick = 0.025 + Math.random() * 0.045;
-      return { o, c, h: Math.max(o, c) + wick, l: Math.min(o, c) - wick };
+      trend = Math.max(-0.03, Math.min(0.03, trend + (Math.random() - 0.5) * 0.035));
+      price = Math.max(0.28, Math.min(0.78, price + trend + (Math.random() - 0.5) * 0.045));
+      return price;
     };
     const seed = () => { data = []; price = 0.5; trend = 0; for (let i = 0; i <= N; i++) data.push(step()); };
     const xsize = () => {
@@ -315,59 +311,51 @@
       chart.width = Math.round(cw * dpr); chart.height = Math.round(ch * dpr);
       xc.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
-    const Y = (v) => ch * 0.82 - v * ch * 0.58;   // candles sit in a band, headroom for depth
-    const quad = (pts, fill) => {
-      xc.fillStyle = fill; xc.beginPath(); xc.moveTo(pts[0], pts[1]);
-      for (let i = 2; i < pts.length; i += 2) xc.lineTo(pts[i], pts[i + 1]);
-      xc.closePath(); xc.fill();
+    const Y = (v) => ch * 0.80 - v * ch * 0.56;
+    const smoothPath = (P) => {
+      xc.moveTo(P[0].x, P[0].y);
+      for (let i = 1; i < P.length - 1; i++) xc.quadraticCurveTo(P[i].x, P[i].y, (P[i].x + P[i + 1].x) / 2, (P[i].y + P[i + 1].y) / 2);
+      xc.lineTo(P[P.length - 1].x, P[P.length - 1].y);
     };
     const draw = (slide) => {
       xc.clearRect(0, 0, cw, ch);
-      const dz = Math.max(13, ch * 0.075);
-      const dzx = dz * 0.85, dzy = -dz;             // extrusion toward the upper-right = depth
-      const gap = cw / (N - 1), bw = Math.max(5, gap * 0.5), floorY = Y(0);
-      // floor plane receding into depth
-      quad([0, floorY, cw, floorY, cw + dzx, floorY + dzy, dzx, floorY + dzy], "rgba(201, 162, 90, 0.03)");
-      // back wall: horizontal gridlines (offset into depth)
-      xc.strokeStyle = "rgba(232, 206, 143, 0.06)"; xc.lineWidth = 1;
-      for (let g = 0; g <= 3; g++) { const y = ch * 0.24 + g * (ch * 0.52 / 3); xc.beginPath(); xc.moveTo(dzx, y + dzy); xc.lineTo(cw + dzx, y + dzy); xc.stroke(); }
-      // back-wall verticals + floor depth lines every few columns
-      xc.strokeStyle = "rgba(232, 206, 143, 0.04)";
-      for (let i = 0; i <= N; i += 3) {
-        const x = i * gap - slide * gap; if (x < -gap || x > cw + gap) continue;
-        xc.beginPath(); xc.moveTo(x + dzx, ch * 0.24 + dzy); xc.lineTo(x + dzx, floorY + dzy); xc.stroke();
-        xc.beginPath(); xc.moveTo(x, floorY); xc.lineTo(x + dzx, floorY + dzy); xc.stroke();
+      const gap = cw / (N - 1), floorY = ch * 0.88, W = 6;
+      // faint horizontal grid
+      xc.strokeStyle = "rgba(232, 206, 143, 0.05)"; xc.lineWidth = 1;
+      for (let g = 0; g <= 4; g++) { const y = ch * 0.18 + g * (ch * 0.62 / 4); xc.beginPath(); xc.moveTo(0, y); xc.lineTo(cw, y); xc.stroke(); }
+      // main line points + a slower moving-average line
+      const P = [], M = [];
+      for (let i = 0; i <= N; i++) {
+        if (data[i] == null) continue;
+        const x = i * gap - slide * gap;
+        P.push({ x, y: Y(data[i]) });
+        let s = 0, n = 0; for (let k = i - W; k <= i; k++) { if (data[k] != null) { s += data[k]; n++; } }
+        M.push({ x, y: Y(s / n) });
       }
-      // right-to-left so nearer (left) candles layer over farther ones
-      for (let i = N; i >= 0; i--) {
-        const d = data[i]; if (!d) continue;
-        const x = i * gap - slide * gap; if (x < -gap - dzx || x > cw + gap) continue;
-        const up = d.c >= d.o;
-        const frontC = up ? "rgba(201, 162, 90, 0.62)" : "rgba(150, 128, 86, 0.5)";
-        const topC = up ? "rgba(243, 226, 176, 0.72)" : "rgba(181, 156, 104, 0.56)";
-        const sideC = up ? "rgba(120, 92, 42, 0.62)" : "rgba(92, 76, 48, 0.52)";
-        const yt = Math.min(Y(d.o), Y(d.c)), bh = Math.max(2.5, Math.abs(Y(d.c) - Y(d.o)));
-        const l = x - bw / 2, r = x + bw / 2, b = yt + bh;
-        // high–low wick, with a faint depth echo behind it
-        xc.strokeStyle = "rgba(232, 206, 143, 0.18)"; xc.lineWidth = 1;
-        xc.beginPath(); xc.moveTo(x + dzx, Y(d.h) + dzy); xc.lineTo(x + dzx, Y(d.l) + dzy); xc.stroke();
-        xc.strokeStyle = frontC;
-        xc.beginPath(); xc.moveTo(x, Y(d.h)); xc.lineTo(x, Y(d.l)); xc.stroke();
-        // extruded body: side (right) → top → front
-        quad([r, yt, r, b, r + dzx, b + dzy, r + dzx, yt + dzy], sideC);
-        quad([l, yt, r, yt, r + dzx, yt + dzy, l + dzx, yt + dzy], topC);
-        quad([l, yt, r, yt, r, b, l, b], frontC);
-      }
-      // close line on the front plane
-      xc.strokeStyle = "rgba(243, 226, 176, 0.6)"; xc.lineWidth = 1.6; xc.lineJoin = "round"; xc.beginPath();
-      let lx = 0, ly = 0;
-      for (let i = 0; i <= N; i++) { const d = data[i]; if (!d) continue; const x = i * gap - slide * gap, y = Y(d.c); i ? xc.lineTo(x, y) : xc.moveTo(x, y); lx = x; ly = y; }
-      xc.stroke();
+      if (P.length < 2) return;
+      // soft area fill under the main line
+      const grd = xc.createLinearGradient(0, Y(0.95), 0, floorY);
+      grd.addColorStop(0, "rgba(201, 162, 90, 0.24)"); grd.addColorStop(1, "rgba(201, 162, 90, 0)");
+      xc.beginPath(); smoothPath(P); xc.lineTo(P[P.length - 1].x, floorY); xc.lineTo(P[0].x, floorY); xc.closePath();
+      xc.fillStyle = grd; xc.fill();
+      // 3D underside: the same curve shifted down-right, darker and thicker
+      xc.save(); xc.translate(6, 8);
+      xc.strokeStyle = "rgba(120, 90, 40, 0.55)"; xc.lineWidth = 7; xc.lineJoin = "round"; xc.lineCap = "round";
+      xc.beginPath(); smoothPath(P); xc.stroke(); xc.restore();
+      // secondary moving-average line
+      xc.strokeStyle = "rgba(232, 206, 143, 0.32)"; xc.lineWidth = 2; xc.lineJoin = "round";
+      xc.beginPath(); smoothPath(M); xc.stroke();
+      // main bold glowing line
+      xc.save(); xc.shadowColor = "rgba(243, 226, 176, 0.55)"; xc.shadowBlur = 14;
+      xc.strokeStyle = "rgba(246, 231, 188, 0.97)"; xc.lineWidth = 4.5; xc.lineJoin = "round"; xc.lineCap = "round";
+      xc.beginPath(); smoothPath(P); xc.stroke(); xc.restore();
+      // leading glow dot
+      const last = P[P.length - 1];
       const pulse = prefersReduced ? 1 : 0.6 + 0.4 * Math.sin(performance.now() * 0.004);
-      const gd = xc.createRadialGradient(lx, ly, 0, lx, ly, 11 * pulse + 4);
+      const gd = xc.createRadialGradient(last.x, last.y, 0, last.x, last.y, 17 * pulse + 5);
       gd.addColorStop(0, "rgba(243, 226, 176, 0.9)"); gd.addColorStop(1, "rgba(243, 226, 176, 0)");
-      xc.fillStyle = gd; xc.beginPath(); xc.arc(lx, ly, 11 * pulse + 4, 0, Math.PI * 2); xc.fill();
-      xc.fillStyle = "#f3e2b0"; xc.beginPath(); xc.arc(lx, ly, 2.2, 0, Math.PI * 2); xc.fill();
+      xc.fillStyle = gd; xc.beginPath(); xc.arc(last.x, last.y, 17 * pulse + 5, 0, Math.PI * 2); xc.fill();
+      xc.fillStyle = "#f8ecc8"; xc.beginPath(); xc.arc(last.x, last.y, 3, 0, Math.PI * 2); xc.fill();
     };
     const frame = (now) => {
       if (!lastAdd) lastAdd = now;
