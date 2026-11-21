@@ -296,7 +296,7 @@
   if (chart && chart.getContext && chart.parentElement) {
     const xc = chart.getContext("2d");
     const xhost = chart.parentElement;
-    let cw = 0, ch = 0, xraf = 0, xIn = false, lastAdd = 0;
+    let cw = 0, ch = 0, xraf = 0, xIn = false, lastAdd = 0, growStart = 0;
     const N = 16;
     let data = [], wig = 0;
     // each tower carries only its own wiggle; the climb comes from its position,
@@ -314,42 +314,65 @@
       for (let i = 2; i < pts.length; i += 2) xc.lineTo(pts[i], pts[i + 1]);
       xc.closePath(); xc.fill();
     };
+    const ease = (t) => 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3);
     const draw = (slide) => {
       xc.clearRect(0, 0, cw, ch);
+      const now = performance.now();
       const gap = cw / N, bw = gap * 0.56;
       const dz = Math.max(10, Math.min(gap * 0.38, ch * 0.07));
       const dzx = dz, dzy = -dz * 0.9;              // depth toward the upper-right
-      const floorY = ch * 0.9, topY = ch * 0.16, span = floorY - topY;
+      const floorY = ch * 0.8, topY = ch * 0.12, span = floorY - topY;
       // floor plane + a faint back grid
-      quad([0, floorY, cw, floorY, cw + dzx, floorY + dzy, dzx, floorY + dzy], "rgba(201, 162, 90, 0.05)");
+      quad([0, floorY, cw, floorY, cw + dzx, floorY + dzy, dzx, floorY + dzy], "rgba(201, 162, 90, 0.06)");
       xc.strokeStyle = "rgba(232, 206, 143, 0.05)"; xc.lineWidth = 1;
       for (let g = 1; g <= 4; g++) { const y = floorY - (span * g) / 4 + dzy; xc.beginPath(); xc.moveTo(dzx, y); xc.lineTo(cw + dzx, y); xc.stroke(); }
-      const tops = [];
-      let lastI = -1;
+      // a light band sweeps across the towers every few seconds
+      const sweepX = prefersReduced ? -9999 : ((now / 1000) % 5.5) / 5.5 * (cw + gap * 6) - gap * 3;
+      const towers = [];
+      let k = 0;
       for (let i = 0; i <= N; i++) {
         if (data[i] == null) continue;
         const x = (i + 0.5) * gap - slide * gap;
         if (x < -gap || x > cw + gap) continue;
-        const h = Math.max(0.08, Math.min(0.96, 0.18 + 0.66 * (x / cw) + data[i]));
-        const yt = floorY - h * span;
+        // first time in view, the towers rise out of the floor one after another
+        const g = prefersReduced ? 1 : (growStart ? ease((now - growStart - k * 60) / 1100) : 0);
+        k++;
+        const h = Math.max(0.08, Math.min(0.96, 0.18 + 0.66 * (x / cw) + data[i])) * g;
+        towers.push({ x, yt: floorY - h * span, h: h * span });
+      }
+      // soft reflections on the floor, drawn first so they sit beneath
+      towers.forEach(({ x, h }) => {
+        const l = x - bw / 2, rh = Math.min(h, ch - floorY) * 0.7;
+        if (rh < 1) return;
+        const rg = xc.createLinearGradient(0, floorY, 0, floorY + rh);
+        rg.addColorStop(0, "rgba(201, 162, 90, 0.2)"); rg.addColorStop(1, "rgba(201, 162, 90, 0)");
+        xc.fillStyle = rg; xc.fillRect(l, floorY, bw, rh);
+      });
+      const tops = [];
+      towers.forEach(({ x, yt }) => {
         const l = x - bw / 2, r = x + bw / 2;
-        // front face: light at the top, sinking into the floor
+        if (floorY - yt < 0.5) return;
         const fg = xc.createLinearGradient(0, yt, 0, floorY);
-        fg.addColorStop(0, "rgba(236, 210, 146, 0.88)"); fg.addColorStop(1, "rgba(150, 110, 48, 0.28)");
-        quad([r, yt, r, floorY, r + dzx, floorY + dzy, r + dzx, yt + dzy], "rgba(104, 78, 34, 0.7)");   // side
+        fg.addColorStop(0, "rgba(236, 210, 146, 0.9)"); fg.addColorStop(1, "rgba(150, 110, 48, 0.28)");
+        quad([r, yt, r, floorY, r + dzx, floorY + dzy, r + dzx, yt + dzy], "rgba(104, 78, 34, 0.72)");   // side
         quad([l, yt, r, yt, r + dzx, yt + dzy, l + dzx, yt + dzy], "rgba(250, 238, 200, 0.92)");      // top
         quad([l, yt, r, yt, r, floorY, l, floorY], fg);                                               // front
+        // the sweeping light passing over the front face
+        const s = 1 - Math.abs(x - sweepX) / (gap * 1.8);
+        if (s > 0) quad([l, yt, r, yt, r, floorY, l, floorY], `rgba(255, 248, 225, ${(s * 0.32).toFixed(3)})`);
+        // bright rim where the light catches the top edges
+        xc.strokeStyle = "rgba(255, 246, 220, 0.85)"; xc.lineWidth = 1.2;
+        xc.beginPath(); xc.moveTo(l, yt); xc.lineTo(r, yt); xc.lineTo(r + dzx, yt + dzy); xc.stroke();
         tops.push({ x: x + dzx / 2, y: yt + dzy / 2 });
-        lastI = tops.length - 1;
-      }
+      });
       if (tops.length < 2) return;
       // glowing line linking the tower tops
       xc.save(); xc.shadowColor = "rgba(243, 226, 176, 0.6)"; xc.shadowBlur = 12;
       xc.strokeStyle = "rgba(248, 236, 200, 0.9)"; xc.lineWidth = 2.5; xc.lineJoin = "round"; xc.lineCap = "round";
-      xc.beginPath(); tops.forEach((p, k) => (k ? xc.lineTo(p.x, p.y) : xc.moveTo(p.x, p.y))); xc.stroke(); xc.restore();
+      xc.beginPath(); tops.forEach((p, n) => (n ? xc.lineTo(p.x, p.y) : xc.moveTo(p.x, p.y))); xc.stroke(); xc.restore();
       // pulsing beacon on the newest tower
-      const last = tops[lastI];
-      const pulse = prefersReduced ? 1 : 0.6 + 0.4 * Math.sin(performance.now() * 0.004);
+      const last = tops[tops.length - 1];
+      const pulse = prefersReduced ? 1 : 0.6 + 0.4 * Math.sin(now * 0.004);
       const gd = xc.createRadialGradient(last.x, last.y, 0, last.x, last.y, 18 * pulse + 6);
       gd.addColorStop(0, "rgba(243, 226, 176, 0.95)"); gd.addColorStop(1, "rgba(243, 226, 176, 0)");
       xc.fillStyle = gd; xc.beginPath(); xc.arc(last.x, last.y, 18 * pulse + 6, 0, Math.PI * 2); xc.fill();
@@ -366,7 +389,7 @@
     seed(); xsize();
     if (prefersReduced) { draw(0); }
     else {
-      new IntersectionObserver(([e]) => { xIn = e.isIntersecting; xIn ? xrun() : xhalt(); }, { threshold: 0 }).observe(xhost);
+      new IntersectionObserver(([e]) => { xIn = e.isIntersecting; if (xIn && !growStart) growStart = performance.now(); xIn ? xrun() : xhalt(); }, { threshold: 0.25 }).observe(xhost);
       document.addEventListener("visibilitychange", () => (document.hidden ? xhalt() : xrun()));
     }
     if ("ResizeObserver" in window) new ResizeObserver(() => { xsize(); if (prefersReduced || !xraf) draw(0); }).observe(xhost);
