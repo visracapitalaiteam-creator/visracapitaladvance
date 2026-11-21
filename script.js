@@ -167,6 +167,15 @@
     toReveal.forEach((el) => io.observe(el));
   }
 
+  /* ---------- pause always-on ornaments while their section is off screen ---------- */
+  // the skyline's twinkling windows, the hero logo's gleam, the enquiry card's orbiting border
+  if ("IntersectionObserver" in window) {
+    const offWatch = new IntersectionObserver((entries) => {
+      entries.forEach((e) => e.target.classList.toggle("is-off", !e.isIntersecting));
+    });
+    document.querySelectorAll(".skyline, .hero, .contact").forEach((el) => offWatch.observe(el));
+  }
+
   /* ---------- gold dividers that draw themselves between sections ---------- */
   if ("IntersectionObserver" in window) {
     const sepIO = new IntersectionObserver((entries, obs) => {
@@ -340,14 +349,12 @@
         const h = Math.max(0.08, Math.min(0.96, 0.18 + 0.66 * (x / cw) + data[i])) * g;
         towers.push({ x, yt: floorY - h * span, h: h * span });
       }
-      // soft reflections on the floor, drawn first so they sit beneath
-      towers.forEach(({ x, h }) => {
-        const l = x - bw / 2, rh = Math.min(h, ch - floorY) * 0.7;
-        if (rh < 1) return;
-        const rg = xc.createLinearGradient(0, floorY, 0, floorY + rh);
-        rg.addColorStop(0, "rgba(201, 162, 90, 0.2)"); rg.addColorStop(1, "rgba(201, 162, 90, 0)");
-        xc.fillStyle = rg; xc.fillRect(l, floorY, bw, rh);
-      });
+      // soft reflections on the floor, drawn first so they sit beneath (one shared gradient)
+      const rMax = (ch - floorY) * 0.7;
+      const rg = xc.createLinearGradient(0, floorY, 0, floorY + rMax);
+      rg.addColorStop(0, "rgba(201, 162, 90, 0.2)"); rg.addColorStop(1, "rgba(201, 162, 90, 0)");
+      xc.fillStyle = rg;
+      towers.forEach(({ x, h }) => { const rh = Math.min(h * 0.7, rMax); if (rh >= 1) xc.fillRect(x - bw / 2, floorY, bw, rh); });
       const tops = [];
       towers.forEach(({ x, yt }) => {
         const l = x - bw / 2, r = x + bw / 2;
@@ -366,10 +373,12 @@
         tops.push({ x: x + dzx / 2, y: yt + dzy / 2 });
       });
       if (tops.length < 2) return;
-      // glowing line linking the tower tops
-      xc.save(); xc.shadowColor = "rgba(243, 226, 176, 0.6)"; xc.shadowBlur = 12;
-      xc.strokeStyle = "rgba(248, 236, 200, 0.9)"; xc.lineWidth = 2.5; xc.lineJoin = "round"; xc.lineCap = "round";
-      xc.beginPath(); tops.forEach((p, n) => (n ? xc.lineTo(p.x, p.y) : xc.moveTo(p.x, p.y))); xc.stroke(); xc.restore();
+      // glowing line linking the tower tops: a wide soft stroke under a thin bright one
+      // (same look as a blur glow, at a fraction of the cost)
+      xc.lineJoin = "round"; xc.lineCap = "round";
+      xc.beginPath(); tops.forEach((p, n) => (n ? xc.lineTo(p.x, p.y) : xc.moveTo(p.x, p.y)));
+      xc.strokeStyle = "rgba(243, 226, 176, 0.18)"; xc.lineWidth = 9; xc.stroke();
+      xc.strokeStyle = "rgba(248, 236, 200, 0.92)"; xc.lineWidth = 2.5; xc.stroke();
       // pulsing beacon on the newest tower
       const last = tops[tops.length - 1];
       const pulse = prefersReduced ? 1 : 0.6 + 0.4 * Math.sin(now * 0.004);
@@ -378,10 +387,12 @@
       xc.fillStyle = gd; xc.beginPath(); xc.arc(last.x, last.y, 18 * pulse + 6, 0, Math.PI * 2); xc.fill();
       xc.fillStyle = "#fbf1d0"; xc.beginPath(); xc.arc(last.x, last.y, 3.2, 0, Math.PI * 2); xc.fill();
     };
+    let lastDraw = 0;
     const frame = (now) => {
       if (!lastAdd) lastAdd = now;
       if (now - lastAdd > 1400) { data.push(step()); data.shift(); lastAdd = now; }
-      draw(Math.min(1, (now - lastAdd) / 1400));
+      // ~30 frames a second is plenty for this slow drift and halves the work
+      if (now - lastDraw > 32) { draw(Math.min(1, (now - lastAdd) / 1400)); lastDraw = now; }
       xraf = requestAnimationFrame(frame);
     };
     const xrun = () => { if (!xraf && xIn && !document.hidden) xraf = requestAnimationFrame(frame); };
@@ -480,7 +491,8 @@
       { ax: 0.20, ay: 0.26, sx: 0.06, sy: 0.11, px: 1.3, py: 5.0, r: 0.58, a: 0.09 },
     ];
     const lsize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // soft gradients only: half resolution is visually identical and paints a quarter of the pixels
+      const dpr = 0.5;
       const r = lhost.getBoundingClientRect();
       lw = r.width; lh = r.height;
       liquid.width = Math.round(lw * dpr); liquid.height = Math.round(lh * dpr);
@@ -503,7 +515,9 @@
       }
       lctx.globalCompositeOperation = "source-over";
     };
-    const lframe = (now) => { ldraw(now * 0.001); lraf = requestAnimationFrame(lframe); };
+    let lLast = 0;
+    // the drift is very slow, so ~30 frames a second looks the same and halves the work
+    const lframe = (now) => { if (now - lLast > 32) { ldraw(now * 0.001); lLast = now; } lraf = requestAnimationFrame(lframe); };
     const lrun = () => { if (!lraf && lIn && !document.hidden) lraf = requestAnimationFrame(lframe); };
     const lhalt = () => { cancelAnimationFrame(lraf); lraf = 0; };
     lsize();
