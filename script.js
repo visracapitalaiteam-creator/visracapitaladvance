@@ -290,72 +290,70 @@
   }
 
   /* ---------- intelligence: decorative live market chart (for looks only) ----------
-     Abstract candlesticks + close line on a slow random walk, no numbers or axes —
+     Rising 3D gold towers linked by a glowing line, no numbers or axes —
      a markets motif, not real data. Paused off-screen / hidden; static if reduced. */
   const chart = document.querySelector(".market .chart");
   if (chart && chart.getContext && chart.parentElement) {
     const xc = chart.getContext("2d");
     const xhost = chart.parentElement;
     let cw = 0, ch = 0, xraf = 0, xIn = false, lastAdd = 0;
-    const N = 40;
-    let data = [], price = 0.5, trend = 0;
-    const step = () => {
-      trend = Math.max(-0.03, Math.min(0.03, trend + (Math.random() - 0.5) * 0.035));
-      price = Math.max(0.28, Math.min(0.78, price + trend + (Math.random() - 0.5) * 0.045));
-      return price;
-    };
-    const seed = () => { data = []; price = 0.5; trend = 0; for (let i = 0; i <= N; i++) data.push(step()); };
+    const N = 16;
+    let data = [], wig = 0;
+    // each tower carries only its own wiggle; the climb comes from its position,
+    // so the row always rises left → right with natural ups and downs
+    const step = () => { wig = wig * 0.35 + (Math.random() - 0.5) * 0.2; return wig; };
+    const seed = () => { data = []; wig = 0; for (let i = 0; i <= N; i++) data.push(step()); };
     const xsize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const r = xhost.getBoundingClientRect(); cw = r.width; ch = r.height;
       chart.width = Math.round(cw * dpr); chart.height = Math.round(ch * dpr);
       xc.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
-    const Y = (v) => ch * 0.80 - v * ch * 0.56;
-    const smoothPath = (P) => {
-      xc.moveTo(P[0].x, P[0].y);
-      for (let i = 1; i < P.length - 1; i++) xc.quadraticCurveTo(P[i].x, P[i].y, (P[i].x + P[i + 1].x) / 2, (P[i].y + P[i + 1].y) / 2);
-      xc.lineTo(P[P.length - 1].x, P[P.length - 1].y);
+    const quad = (pts, fill) => {
+      xc.fillStyle = fill; xc.beginPath(); xc.moveTo(pts[0], pts[1]);
+      for (let i = 2; i < pts.length; i += 2) xc.lineTo(pts[i], pts[i + 1]);
+      xc.closePath(); xc.fill();
     };
     const draw = (slide) => {
       xc.clearRect(0, 0, cw, ch);
-      const gap = cw / (N - 1), floorY = ch * 0.88, W = 6;
-      // faint horizontal grid
+      const gap = cw / N, bw = gap * 0.56;
+      const dz = Math.max(10, Math.min(gap * 0.38, ch * 0.07));
+      const dzx = dz, dzy = -dz * 0.9;              // depth toward the upper-right
+      const floorY = ch * 0.9, topY = ch * 0.16, span = floorY - topY;
+      // floor plane + a faint back grid
+      quad([0, floorY, cw, floorY, cw + dzx, floorY + dzy, dzx, floorY + dzy], "rgba(201, 162, 90, 0.05)");
       xc.strokeStyle = "rgba(232, 206, 143, 0.05)"; xc.lineWidth = 1;
-      for (let g = 0; g <= 4; g++) { const y = ch * 0.18 + g * (ch * 0.62 / 4); xc.beginPath(); xc.moveTo(0, y); xc.lineTo(cw, y); xc.stroke(); }
-      // main line points + a slower moving-average line
-      const P = [], M = [];
+      for (let g = 1; g <= 4; g++) { const y = floorY - (span * g) / 4 + dzy; xc.beginPath(); xc.moveTo(dzx, y); xc.lineTo(cw + dzx, y); xc.stroke(); }
+      const tops = [];
+      let lastI = -1;
       for (let i = 0; i <= N; i++) {
         if (data[i] == null) continue;
-        const x = i * gap - slide * gap;
-        P.push({ x, y: Y(data[i]) });
-        let s = 0, n = 0; for (let k = i - W; k <= i; k++) { if (data[k] != null) { s += data[k]; n++; } }
-        M.push({ x, y: Y(s / n) });
+        const x = (i + 0.5) * gap - slide * gap;
+        if (x < -gap || x > cw + gap) continue;
+        const h = Math.max(0.08, Math.min(0.96, 0.18 + 0.66 * (x / cw) + data[i]));
+        const yt = floorY - h * span;
+        const l = x - bw / 2, r = x + bw / 2;
+        // front face: light at the top, sinking into the floor
+        const fg = xc.createLinearGradient(0, yt, 0, floorY);
+        fg.addColorStop(0, "rgba(236, 210, 146, 0.88)"); fg.addColorStop(1, "rgba(150, 110, 48, 0.28)");
+        quad([r, yt, r, floorY, r + dzx, floorY + dzy, r + dzx, yt + dzy], "rgba(104, 78, 34, 0.7)");   // side
+        quad([l, yt, r, yt, r + dzx, yt + dzy, l + dzx, yt + dzy], "rgba(250, 238, 200, 0.92)");      // top
+        quad([l, yt, r, yt, r, floorY, l, floorY], fg);                                               // front
+        tops.push({ x: x + dzx / 2, y: yt + dzy / 2 });
+        lastI = tops.length - 1;
       }
-      if (P.length < 2) return;
-      // soft area fill under the main line
-      const grd = xc.createLinearGradient(0, Y(0.95), 0, floorY);
-      grd.addColorStop(0, "rgba(201, 162, 90, 0.24)"); grd.addColorStop(1, "rgba(201, 162, 90, 0)");
-      xc.beginPath(); smoothPath(P); xc.lineTo(P[P.length - 1].x, floorY); xc.lineTo(P[0].x, floorY); xc.closePath();
-      xc.fillStyle = grd; xc.fill();
-      // 3D underside: the same curve shifted down-right, darker and thicker
-      xc.save(); xc.translate(6, 8);
-      xc.strokeStyle = "rgba(120, 90, 40, 0.55)"; xc.lineWidth = 7; xc.lineJoin = "round"; xc.lineCap = "round";
-      xc.beginPath(); smoothPath(P); xc.stroke(); xc.restore();
-      // secondary moving-average line
-      xc.strokeStyle = "rgba(232, 206, 143, 0.32)"; xc.lineWidth = 2; xc.lineJoin = "round";
-      xc.beginPath(); smoothPath(M); xc.stroke();
-      // main bold glowing line
-      xc.save(); xc.shadowColor = "rgba(243, 226, 176, 0.55)"; xc.shadowBlur = 14;
-      xc.strokeStyle = "rgba(246, 231, 188, 0.97)"; xc.lineWidth = 4.5; xc.lineJoin = "round"; xc.lineCap = "round";
-      xc.beginPath(); smoothPath(P); xc.stroke(); xc.restore();
-      // leading glow dot
-      const last = P[P.length - 1];
+      if (tops.length < 2) return;
+      // glowing line linking the tower tops
+      xc.save(); xc.shadowColor = "rgba(243, 226, 176, 0.6)"; xc.shadowBlur = 12;
+      xc.strokeStyle = "rgba(248, 236, 200, 0.9)"; xc.lineWidth = 2.5; xc.lineJoin = "round"; xc.lineCap = "round";
+      xc.beginPath(); tops.forEach((p, k) => (k ? xc.lineTo(p.x, p.y) : xc.moveTo(p.x, p.y))); xc.stroke(); xc.restore();
+      // pulsing beacon on the newest tower
+      const last = tops[lastI];
       const pulse = prefersReduced ? 1 : 0.6 + 0.4 * Math.sin(performance.now() * 0.004);
-      const gd = xc.createRadialGradient(last.x, last.y, 0, last.x, last.y, 17 * pulse + 5);
-      gd.addColorStop(0, "rgba(243, 226, 176, 0.9)"); gd.addColorStop(1, "rgba(243, 226, 176, 0)");
-      xc.fillStyle = gd; xc.beginPath(); xc.arc(last.x, last.y, 17 * pulse + 5, 0, Math.PI * 2); xc.fill();
-      xc.fillStyle = "#f8ecc8"; xc.beginPath(); xc.arc(last.x, last.y, 3, 0, Math.PI * 2); xc.fill();
+      const gd = xc.createRadialGradient(last.x, last.y, 0, last.x, last.y, 18 * pulse + 6);
+      gd.addColorStop(0, "rgba(243, 226, 176, 0.95)"); gd.addColorStop(1, "rgba(243, 226, 176, 0)");
+      xc.fillStyle = gd; xc.beginPath(); xc.arc(last.x, last.y, 18 * pulse + 6, 0, Math.PI * 2); xc.fill();
+      xc.fillStyle = "#fbf1d0"; xc.beginPath(); xc.arc(last.x, last.y, 3.2, 0, Math.PI * 2); xc.fill();
     };
     const frame = (now) => {
       if (!lastAdd) lastAdd = now;
